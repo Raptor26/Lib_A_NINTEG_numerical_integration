@@ -44,23 +44,28 @@ typedef struct {
     size_t integrateTacktFlag;
 } NINTEG_data_for_integrate_s;
 
+/**
+ * @brief   Структура, содержащая поля для нахождения дельты между измерениями
+ *          методом трапеций;
+ */
 typedef struct {
     /**
      * @brief   Значение приращения;
+     * @note    Выходное значение фукнции NINTEG_FindDeltaTrapezium();
      */
     float deltaData;
 
     /**
-     * @brief   Период интегрирования в секундах;
+     * @brief   Период в секундах между измерениями;
      */
     float dT;
 
     /**
-     * @brief   Данные для интегрирования, которые были получены в предыдущем
-     *          вызове функции интегрирования:
+     * @brief   Измерения, которые были получены в предыдущем
+     *          вызове функции NINTEG_FindDeltaTrapezium();
      */
     float previousData;
-} NINTEG_trapezium_integrate_s;
+} NINTEG_find_delta_trapezium_s;
 /******************************************************************************/
 
 
@@ -80,10 +85,10 @@ extern void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleV
         float *pDeltaAngelsArr);
 
 extern float NINTEG_FindDeltaTrapezium(
-        NINTEG_trapezium_integrate_s *pStruct,
+        NINTEG_find_delta_trapezium_s *pStruct,
         float data);
-extern void NINTEG_Init_IntegrateTrapezium(
-        NINTEG_trapezium_integrate_s *pStruct,
+extern void NINTEG_InitIntegrateTrapeziumStruct(
+        NINTEG_find_delta_trapezium_s *pStruct,
         float dT);
 /******************************************************************************/
 

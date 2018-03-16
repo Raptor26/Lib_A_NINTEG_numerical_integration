@@ -82,7 +82,7 @@ float NINTEG_IntegrateAnglVelocityTrapezium(
  * @return  Приращение величины за промежуток времени;
  */
 float NINTEG_FindDeltaTrapezium(
-                                NINTEG_trapezium_integrate_s *pStruct,
+                                NINTEG_find_delta_trapezium_s *pStruct,
                                 float newData)
 {
     // Численное интегрирование методом трапеций;
@@ -95,8 +95,8 @@ float NINTEG_FindDeltaTrapezium(
     return pStruct->deltaData;
 }
 
-void NINTEG_Init_IntegrateTrapezium(
-                                    NINTEG_trapezium_integrate_s *pStruct,
+void NINTEG_InitIntegrateTrapeziumStruct(
+                                    NINTEG_find_delta_trapezium_s *pStruct,
                                     float dT)
 {
     pStruct->dT = dT;
