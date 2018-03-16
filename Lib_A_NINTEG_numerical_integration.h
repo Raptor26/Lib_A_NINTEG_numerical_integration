@@ -46,9 +46,9 @@ typedef struct {
 
 typedef struct {
     /**
-     * @brief   Интегрированное значение;
+     * @brief   Значение приращения;
      */
-    float integratedata;
+    float deltaData;
 
     /**
      * @brief   Период интегрирования в секундах;
@@ -79,9 +79,12 @@ extern void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleV
         float deltaTimeInSec,
         float *pDeltaAngelsArr);
 
-extern float NINTEG_IntegrateTrapezium(
+extern float NINTEG_FindDeltaTrapezium(
         NINTEG_trapezium_integrate_s *pStruct,
         float data);
+extern void NINTEG_Init_IntegrateTrapezium(
+        NINTEG_trapezium_integrate_s *pStruct,
+        float dT);
 /******************************************************************************/
 
 

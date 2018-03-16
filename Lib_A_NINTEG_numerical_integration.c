@@ -73,18 +73,35 @@ float NINTEG_IntegrateAnglVelocityTrapezium(
     return deltaAngel;
 }
 
-float NINTEG_IntegrateTrapezium(
+/**
+ * @brief   Функция находит приращение величины методом трапеций за промежуток
+ *          времени "dT";
+ * @param   *pStruc^:   Указатель на структуру, содержащую данные для нахождения
+ *                      приращения величины за промежуток времени;
+ * @param   newData:    Новое значение для нахождения приращения;
+ * @return  Приращение величины за промежуток времени;
+ */
+float NINTEG_FindDeltaTrapezium(
                                 NINTEG_trapezium_integrate_s *pStruct,
-                                float data)
+                                float newData)
 {
     // Численное интегрирование методом трапеций;
-    pStruct->integratedata = (pStruct->previousData + data) * pStruct->dT / 2.0f;
+    pStruct->deltaData = (pStruct->previousData + newData) * pStruct->dT / 2.0f;
 
     // Копирование текущего значения переменной в переменную данных за предыдущий момент времени;
-    pStruct->previousData = data;
+    pStruct->previousData = newData;
 
     // Возврат интегрированного значения;
-    return pStruct->integratedata;
+    return pStruct->deltaData;
+}
+
+void NINTEG_Init_IntegrateTrapezium(
+                                    NINTEG_trapezium_integrate_s *pStruct,
+                                    float dT)
+{
+    pStruct->dT = dT;
+    pStruct->deltaData = 0.0f;
+    pStruct->previousData = 0.0f;
 }
 /*============================================================================*/
 /******************************************************************************/
