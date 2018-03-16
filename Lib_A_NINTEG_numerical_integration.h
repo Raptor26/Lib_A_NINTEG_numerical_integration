@@ -5,8 +5,8 @@
  * Created on %<%DATE%>%, %<%TIME%>%
  */
 
-#ifndef LIB_A_AVI_ANGULAR_VELOCITY_INTEGRATE_H
-#define	LIB_A_AVI_ANGULAR_VELOCITY_INTEGRATE_H
+#ifndef LIB_A_NINTEG_NUMERICAL_INTEGRATION_H
+#define	LIB_A_NINTEG_NUMERICAL_INTEGRATION_H
 
 /******************************************************************************/
 //  Секция include (подключаем заголовочные файлы используемых модулей)
@@ -42,7 +42,25 @@ typedef struct {
     float anglVelocity;
     float dT;
     size_t integrateTacktFlag;
-} AVI_data_for_integrate_s;
+} NINTEG_data_for_integrate_s;
+
+typedef struct {
+    /**
+     * @brief   Интегрированное значение;
+     */
+    float integratedata;
+
+    /**
+     * @brief   Период интегрирования в секундах;
+     */
+    float dT;
+
+    /**
+     * @brief   Данные для интегрирования, которые были получены в предыдущем
+     *          вызове функции интегрирования:
+     */
+    float previousData;
+} NINTEG_trapezium_integrate_s;
 /******************************************************************************/
 
 
@@ -53,13 +71,17 @@ typedef struct {
 
 /******************************************************************************/
 //  Секция прототипов глобальных функций
-extern float AVI_IntegrateAnglVelocityTrapezium(float *pPreviousAngleVelocity,
+extern float NINTEG_IntegrateAnglVelocityTrapezium(float *pPreviousAngleVelocity,
         float *pCurrentAngleVelocity,
         float deltaTimeInSec);
-extern void AVI_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleVelocityArr,
+extern void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleVelocityArr,
         float *pCurrentAngleVelocityArr,
         float deltaTimeInSec,
         float *pDeltaAngelsArr);
+
+extern float NINTEG_IntegrateTrapezium(
+        NINTEG_trapezium_integrate_s *pStruct,
+        float data);
 /******************************************************************************/
 
 
@@ -67,7 +89,7 @@ extern void AVI_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleVelo
 //  Секция определения макросов
 /******************************************************************************/
 
-#endif	/* LIB_A_AVI_ANGULAR_VELOCITY_INTEGRATE_H */
+#endif	/* LIB_A_NINTEG_NUMERICAL_INTEGRATION_H */
 
 ////////////////////////////////////////////////////////////////////////////////
 //  END OF FILE
