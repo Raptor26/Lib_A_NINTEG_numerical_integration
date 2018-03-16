@@ -89,7 +89,7 @@ extern float NINTEG_IntegrateTrapezium(
 //  Секция определения макросов
 /******************************************************************************/
 
-#endif	/* LIB_A_INTEG_NUMERICAL_INTEGRATION_H */
+#endif	/* LIB_A_NINTEG_NUMERICAL_INTEGRATION_H */
 
 ////////////////////////////////////////////////////////////////////////////////
 //  END OF FILE
