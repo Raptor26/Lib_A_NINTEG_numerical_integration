@@ -43,6 +43,24 @@ typedef struct {
     float dT;
     size_t integrateTacktFlag;
 } AVI_data_for_integrate_s;
+
+typedef struct {
+    /**
+     * @brief   Интегрированное значение;
+     */
+    float integratedata;
+
+    /**
+     * @brief   Период интегрирования в секундах;
+     */
+    float dT;
+
+    /**
+     * @brief   Данные для интегрирования, которые были получены в предыдущем
+     *          вызове функции интегрирования:
+     */
+    float previousData;
+} AVI_trapezium_integrate_s;
 /******************************************************************************/
 
 
@@ -60,6 +78,10 @@ extern void AVI_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleVelo
         float *pCurrentAngleVelocityArr,
         float deltaTimeInSec,
         float *pDeltaAngelsArr);
+
+extern float AVI_IntegrateTrapezium(
+        AVI_trapezium_integrate_s *pStruct,
+        float data);
 /******************************************************************************/
 
 

@@ -32,7 +32,8 @@
 // Секция описания функций (сначала глобальных, потом локальных)
 
 /*============================================================================*/
-void AVI_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleVelocityArr,
+void AVI_IntegrateAngleVelocityTrapeziumAllAxis(
+                                                float *pPreviousAngleVelocityArr,
                                                 float *pCurrentAngleVelocityArr,
                                                 float deltaTimeInSec,
                                                 float *pDeltaAnglesArr)
@@ -56,7 +57,8 @@ void AVI_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleVelocityArr
                           deltaTimeInSec);
 }
 
-float AVI_IntegrateAnglVelocityTrapezium(float *pPreviousAngleVelocity,
+float AVI_IntegrateAnglVelocityTrapezium(
+                                         float *pPreviousAngleVelocity,
                                          float *pCurrentAngleVelocity,
                                          float deltaTimeInSec)
 {
@@ -69,6 +71,20 @@ float AVI_IntegrateAnglVelocityTrapezium(float *pPreviousAngleVelocity,
     *pPreviousAngleVelocity = *pCurrentAngleVelocity;
 
     return deltaAngel;
+}
+
+float AVI_IntegrateTrapezium(
+                             AVI_trapezium_integrate_s *pStruct,
+                             float data)
+{
+    // Численное интегрирование методом трапеций;
+    pStruct->integratedata = (pStruct->previousData + data) * pStruct->dT / 2.0f;
+
+    // Копирование текущего значения переменной в переменную данных за предыдущий момент времени;
+    pStruct->previousData = data;
+
+    // Возврат интегрированного значения;
+    return pStruct->integratedata;
 }
 /*============================================================================*/
 /******************************************************************************/
