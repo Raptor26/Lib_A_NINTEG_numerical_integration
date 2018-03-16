@@ -7,7 +7,7 @@
 
 /******************************************************************************/
 // Секция include: здесь подключается заголовочный файл к модулю
-#include "Lib_A_INTEG_numerical_integration.h"
+#include "Lib_A_NINTEG_numerical_integration.h"
 /******************************************************************************/
 
 
@@ -33,34 +33,34 @@
 
 /*============================================================================*/
 void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
-                                                float *pPreviousAngleVelocityArr,
-                                                float *pCurrentAngleVelocityArr,
-                                                float deltaTimeInSec,
-                                                float *pDeltaAnglesArr)
+                                                   float *pPreviousAngleVelocityArr,
+                                                   float *pCurrentAngleVelocityArr,
+                                                   float deltaTimeInSec,
+                                                   float *pDeltaAnglesArr)
 {
     //  Нахождение дельты угла по оси X;
-    *pDeltaAnglesArr++ = AVI_IntegrateAnglVelocityTrapezium \
+    *pDeltaAnglesArr++ = NINTEG_IntegrateAnglVelocityTrapezium \
                          (pPreviousAngleVelocityArr++, \
                           pCurrentAngleVelocityArr++, \
                           deltaTimeInSec);
 
     //  Нахождение дельты угла по оси Y;
-    *pDeltaAnglesArr++ = AVI_IntegrateAnglVelocityTrapezium \
+    *pDeltaAnglesArr++ = NINTEG_IntegrateAnglVelocityTrapezium \
                          (pPreviousAngleVelocityArr++, \
                           pCurrentAngleVelocityArr++, \
                           deltaTimeInSec);
 
     //  Нахождение дельты угла по оси Z;
-    *pDeltaAnglesArr = AVI_IntegrateAnglVelocityTrapezium \
+    *pDeltaAnglesArr = NINTEG_IntegrateAnglVelocityTrapezium \
                          (pPreviousAngleVelocityArr, \
                           pCurrentAngleVelocityArr, \
                           deltaTimeInSec);
 }
 
 float NINTEG_IntegrateAnglVelocityTrapezium(
-                                         float *pPreviousAngleVelocity,
-                                         float *pCurrentAngleVelocity,
-                                         float deltaTimeInSec)
+                                            float *pPreviousAngleVelocity,
+                                            float *pCurrentAngleVelocity,
+                                            float deltaTimeInSec)
 {
     //  Нахождение угла на основе текущей угловой скорости и угловой скорости в
     //  предыдущий момент времени;
@@ -74,8 +74,8 @@ float NINTEG_IntegrateAnglVelocityTrapezium(
 }
 
 float NINTEG_IntegrateTrapezium(
-                             NINTEG_trapezium_integrate_s *pStruct,
-                             float data)
+                                NINTEG_trapezium_integrate_s *pStruct,
+                                float data)
 {
     // Численное интегрирование методом трапеций;
     pStruct->integratedata = (pStruct->previousData + data) * pStruct->dT / 2.0f;

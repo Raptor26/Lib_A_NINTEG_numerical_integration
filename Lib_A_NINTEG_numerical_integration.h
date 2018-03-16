@@ -80,7 +80,7 @@ extern void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(float *pPreviousAngleV
         float *pDeltaAngelsArr);
 
 extern float NINTEG_IntegrateTrapezium(
-        AVI_trapezium_integrate_s *pStruct,
+        NINTEG_trapezium_integrate_s *pStruct,
         float data);
 /******************************************************************************/
 
