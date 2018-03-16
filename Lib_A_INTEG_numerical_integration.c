@@ -7,7 +7,7 @@
 
 /******************************************************************************/
 // Секция include: здесь подключается заголовочный файл к модулю
-#include "Lib_A_AVI_angular_velocity_integrate.h"
+#include "Lib_A_INTEG_numerical_integration.h"
 /******************************************************************************/
 
 
@@ -32,7 +32,7 @@
 // Секция описания функций (сначала глобальных, потом локальных)
 
 /*============================================================================*/
-void AVI_IntegrateAngleVelocityTrapeziumAllAxis(
+void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
                                                 float *pPreviousAngleVelocityArr,
                                                 float *pCurrentAngleVelocityArr,
                                                 float deltaTimeInSec,
@@ -57,7 +57,7 @@ void AVI_IntegrateAngleVelocityTrapeziumAllAxis(
                           deltaTimeInSec);
 }
 
-float AVI_IntegrateAnglVelocityTrapezium(
+float NINTEG_IntegrateAnglVelocityTrapezium(
                                          float *pPreviousAngleVelocity,
                                          float *pCurrentAngleVelocity,
                                          float deltaTimeInSec)
@@ -73,8 +73,8 @@ float AVI_IntegrateAnglVelocityTrapezium(
     return deltaAngel;
 }
 
-float AVI_IntegrateTrapezium(
-                             AVI_trapezium_integrate_s *pStruct,
+float NINTEG_IntegrateTrapezium(
+                             NINTEG_trapezium_integrate_s *pStruct,
                              float data)
 {
     // Численное интегрирование методом трапеций;
