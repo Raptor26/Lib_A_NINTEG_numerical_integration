@@ -75,11 +75,14 @@ float NINTEG_IntegrateAnglVelocityTrapezium(
 
 /**
  * @brief   Функция находит приращение величины методом трапеций за промежуток
- *          времени "dT";
- * @param   *pStruc^:   Указатель на структуру, содержащую данные для нахождения
+ *          времени "dT".
+ *          dT = время между вызовами функции NINTEG_FindDeltaTrapezium();
+ * @param   *pStruct:   Указатель на структуру, содержащую данные для нахождения
  *                      приращения величины за промежуток времени;
  * @param   newData:    Новое значение для нахождения приращения;
- * @return  Приращение величины за промежуток времени;
+ * @return  Приращение величины за промежуток времени "dT".
+ *      @note   (Приращение за промежуток времени между вызовами функии
+ *              "NINTEG_FindDeltaTrapezium()");
  */
 float NINTEG_FindDeltaTrapezium(
                                 NINTEG_find_delta_trapezium_s *pStruct,
@@ -96,8 +99,8 @@ float NINTEG_FindDeltaTrapezium(
 }
 
 void NINTEG_InitIntegrateTrapeziumStruct(
-                                    NINTEG_find_delta_trapezium_s *pStruct,
-                                    float dT)
+                                         NINTEG_find_delta_trapezium_s *pStruct,
+                                         float dT)
 {
     pStruct->dT = dT;
     pStruct->deltaData = 0.0f;
