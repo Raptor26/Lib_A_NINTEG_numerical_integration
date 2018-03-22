@@ -2,7 +2,55 @@
  * File:   %<%NAME%>%.%<%EXTENSION%>%
  * Author: %<%USER%>%
  *
- * Created on %<%DATE%>%, %<%TIME%>%
+ * #############################################################################
+ * ########## <Функции, используемые в данном программном модуле> ##############
+ * #############################################################################
+ * @note    В Данной библиотеки находятся следующие функции:
+ *          --------------------------------------------------------------------
+ *          --  NINTEG_FindDeltaTrapezium() - функция, для нахождения приращения
+ *              величины методом трапеций за промежуток времени "dT";
+ *          --  NINTEG_InitFindDeltaTrapeziumStruct() - функция, инициализирующая
+ *              структуру, необходимую для функции NINTEG_FindDeltaTrapezium();
+ *      @code
+ *          ...
+ *          // Объявление перменных;
+ *          NINTEG_find_delta_trapezium_s   gyrDeltaAngleX,
+ *                                          gyrDeltaAngleY,
+ *                                          gyrDeltaAngleZ;
+ *          float   deltaAngleX,
+ *                  deltaAngleY,
+ *                  deltaAngleZ;
+ *          // Период интегрирования в сек;
+ *          float dT = 0.001f;
+ *          ...
+ *          int main(void)
+ *          {
+ *              ...
+ *              // Инициализация структур;
+ *              NINTEG_InitFindDeltaTrapeziumStruct(&gyrDeltaAngleX, dT);
+ *              NINTEG_InitFindDeltaTrapeziumStruct(&gyrDeltaAngleY, dT);
+ *              NINTEG_InitFindDeltaTrapeziumStruct(&gyrDeltaAngleZ, dT);
+ *              ...
+ *              while(1)
+ *              {
+ *                  ...
+ *                  deltaAngleX = NINTEG_FindDeltaTrapezium(&gyrDeltaAngleX,
+ *                                                          newAngleSpeedX);
+ *                  deltaAngleY = NINTEG_FindDeltaTrapezium(&gyrDeltaAngleY,
+ *                                                          newAngleSpeedY);
+ *                  deltaAngleZ = NINTEG_FindDeltaTrapezium(&gyrDeltaAngleZ,
+ *                                                          newAngleSpeedZ);
+ *
+ *                  // Причем:
+ *                  deltaAngleX == gyrDeltaAngleX.deltaData;
+ *                  deltaAngleY == gyrDeltaAngleY.deltaData;
+ *                  deltaAngleZ == gyrDeltaAngleZ.deltaData;
+ *                  ...
+ *              }
+ *              return 0;
+ *          }
+ *      @endcode
+ *      ------------------------------------------------------------------------
  */
 
 /******************************************************************************/
@@ -98,7 +146,15 @@ float NINTEG_FindDeltaTrapezium(
     return pStruct->deltaData;
 }
 
-void NINTEG_InitIntegrateTrapeziumStruct(
+/**
+ * @brief   Функция инициализирует структуру типа NINTEG_find_delta_trapezium_s;
+ * @param   *pStruct:   Указатель на структуру, в которой содержатся данные для
+ *                      нахождения дельты величины между вызовами функции
+ *                      NINTEG_FindDeltaTrapezium();
+ * @param   dT: Период времени в секундах, для нахождения приращения величины;
+ * @return  None;
+ */
+void NINTEG_InitFindDeltaTrapeziumStruct(
                                          NINTEG_find_delta_trapezium_s *pStruct,
                                          float dT)
 {

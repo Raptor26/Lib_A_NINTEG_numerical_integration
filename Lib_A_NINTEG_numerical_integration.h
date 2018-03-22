@@ -50,7 +50,8 @@ typedef struct {
  */
 typedef struct {
     /**
-     * @brief   Значение приращения;
+     * @brief   Значение приращения угла на момент завершения работы
+     *          функции NINTEG_FindDeltaTrapezium();
      * @note    Выходное значение фукнции NINTEG_FindDeltaTrapezium();
      */
     float deltaData;
