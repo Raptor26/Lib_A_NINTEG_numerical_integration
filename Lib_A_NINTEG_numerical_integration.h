@@ -77,24 +77,28 @@ typedef struct {
 
 /******************************************************************************/
 //  Секция прототипов глобальных функций
-extern float NINTEG_IntegrateAnglVelocityTrapezium
-(float *pPreviousAngleVelocity,
- float *pCurrentAngleVelocity,
- float deltaTimeInSec);
+extern float
+NINTEG_IntegrateAnglVelocityTrapezium(
+  float *pPreviousAngleVelocity,
+  float *pCurrentAngleVelocity,
+  float deltaTimeInSec);
 
-extern void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis
-(float *pPreviousAngleVelocityArr,
- float *pCurrentAngleVelocityArr,
- float deltaTimeInSec,
- float *pDeltaAngelsArr);
+extern void
+NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
+  float *pPreviousAngleVelocityArr,
+  float *pCurrentAngleVelocityArr,
+  float deltaTimeInSec,
+  float *pDeltaAngelsArr);
 
-extern float NINTEG_FindDeltaTrapezium
-(NINTEG_find_delta_trapezium_s *pStruct,
- float data);
+extern float
+NINTEG_FindDeltaTrapezium(
+  NINTEG_find_delta_trapezium_s *pStruct,
+  float data);
 
-extern void NINTEG_InitIntegrateTrapeziumStruct
-(NINTEG_find_delta_trapezium_s *pStruct,
- float dT);
+extern void
+NINTEG_InitIntegrateTrapeziumStruct(
+  NINTEG_find_delta_trapezium_s *pStruct,
+  float dT);
 /******************************************************************************/
 
 
