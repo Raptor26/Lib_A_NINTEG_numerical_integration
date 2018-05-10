@@ -6,7 +6,7 @@
  */
 
 #ifndef LIB_A_NINTEG_NUMERICAL_INTEGRATION_H
-#define	LIB_A_NINTEG_NUMERICAL_INTEGRATION_H
+#define LIB_A_NINTEG_NUMERICAL_INTEGRATION_H
 
 /******************************************************************************/
 //  Секция include (подключаем заголовочные файлы используемых модулей)
@@ -39,9 +39,9 @@
 //  Секция определения типов
 
 typedef struct {
-    float anglVelocity;
-    float dT;
-    size_t integrateTacktFlag;
+	float anglVelocity;
+	float dT;
+	size_t integrateTacktFlag;
 } NINTEG_data_for_integrate_s;
 
 /**
@@ -49,23 +49,23 @@ typedef struct {
  *          методом трапеций;
  */
 typedef struct {
-    /**
-     * @brief   Значение приращения угла на момент завершения работы
-     *          функции NINTEG_FindDeltaTrapezium();
-     * @note    Выходное значение фукнции NINTEG_FindDeltaTrapezium();
-     */
-    float deltaData;
+	/**
+	 * @brief   Значение приращения угла на момент завершения работы
+	 *          функции NINTEG_FindDeltaTrapezium();
+	 * @note    Выходное значение фукнции NINTEG_FindDeltaTrapezium();
+	 */
+	float deltaData;
 
-    /**
-     * @brief   Период в секундах между измерениями;
-     */
-    float dT;
+	/**
+	 * @brief   Период в секундах между измерениями;
+	 */
+	float dT;
 
-    /**
-     * @brief   Измерения, которые были получены в предыдущем
-     *          вызове функции NINTEG_FindDeltaTrapezium();
-     */
-    float previousData;
+	/**
+	 * @brief   Измерения, которые были получены в предыдущем
+	 *          вызове функции NINTEG_FindDeltaTrapezium();
+	 */
+	float previousData;
 } NINTEG_find_delta_trapezium_s;
 /******************************************************************************/
 
@@ -79,22 +79,22 @@ typedef struct {
 //  Секция прототипов глобальных функций
 extern float NINTEG_IntegrateAnglVelocityTrapezium
 (float *pPreviousAngleVelocity,
-        float *pCurrentAngleVelocity,
-        float deltaTimeInSec);
+ float *pCurrentAngleVelocity,
+ float deltaTimeInSec);
 
 extern void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis
 (float *pPreviousAngleVelocityArr,
-        float *pCurrentAngleVelocityArr,
-        float deltaTimeInSec,
-        float *pDeltaAngelsArr);
+ float *pCurrentAngleVelocityArr,
+ float deltaTimeInSec,
+ float *pDeltaAngelsArr);
 
 extern float NINTEG_FindDeltaTrapezium
 (NINTEG_find_delta_trapezium_s *pStruct,
-        float data);
+ float data);
 
 extern void NINTEG_InitIntegrateTrapeziumStruct
 (NINTEG_find_delta_trapezium_s *pStruct,
-        float dT);
+ float dT);
 /******************************************************************************/
 
 
@@ -102,7 +102,7 @@ extern void NINTEG_InitIntegrateTrapeziumStruct
 //  Секция определения макросов
 /******************************************************************************/
 
-#endif	/* LIB_A_NINTEG_NUMERICAL_INTEGRATION_H */
+#endif  /* LIB_A_NINTEG_NUMERICAL_INTEGRATION_H */
 
 ////////////////////////////////////////////////////////////////////////////////
 //  END OF FILE
