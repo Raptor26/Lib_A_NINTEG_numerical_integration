@@ -137,16 +137,10 @@ float NINTEG_IntegrateAnglVelocityTrapezium(
  */
 float NINTEG_FindDeltaTrapezium
 (NINTEG_find_delta_trapezium_s *pStruct,
-    float newData)
+                                float newData)
 {
-	// Численное интегрирование методом трапеций;
-	pStruct->deltaData
-	= (pStruct
-	   ->previousData + newData) * pStruct->dT / 2.0f;
-	
-	// Копирование текущего значения переменной в переменную данных за предыдущий момент времени;
-	pStruct
-	->previousData = newData;
+    // Численное интегрирование методом трапеций;
+    pStruct->deltaData = (pStruct->previousData + newData) * pStruct->dT / 2.0f;
 
 	// Возврат интегрированного значения;
 	return pStruct->deltaData;
