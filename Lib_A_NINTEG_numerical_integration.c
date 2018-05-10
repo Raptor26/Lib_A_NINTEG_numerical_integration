@@ -112,7 +112,7 @@ float NINTEG_IntegrateAnglVelocityTrapezium(
 {
 	//  Нахождение угла на основе текущей угловой скорости и угловой скорости в
 	//  предыдущий момент времени;
-	float deltaAngel = (*pPreviousAngleVelocity + *pCurrentAngleVelocity) * deltaTimeInSec / 2.0f;
+	float deltaAngel = (*pPreviousAngleVelocity + *pCurrentAngleVelocity) * deltaTimeInSec * 0.5f;
 
 	//  Копирование текущей угловой скорости в переменную угловой скорости за
 	//  предыдущий момент времени;
@@ -138,7 +138,7 @@ float NINTEG_FindDeltaTrapezium
 {
 	// Численное интегрирование методом трапеций;
 	pStruct->deltaData =
-	  (pStruct->previousData + newData) * pStruct->dT / 2.0f;
+		(pStruct->previousData + newData) * pStruct->dT * 0.5f;
 
 	// Копирование текущего значения переменной в переменную данных за предыдущий момент времени;
 	pStruct->previousData = newData;
