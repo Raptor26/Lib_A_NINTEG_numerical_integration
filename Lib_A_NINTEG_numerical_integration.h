@@ -66,7 +66,17 @@ typedef struct {
 	 *          вызове функции NINTEG_FindDeltaTrapezium();
 	 */
 	float previousData;
-} NINTEG_find_delta_trapezium_s;
+
+    /**
+     * @brief Аккумулятор интегрирования
+     */
+	float accumData;
+
+	struct
+	{
+		size_t accumEn;
+	} tumblers_s;
+} ninteg_trapz_s;
 /******************************************************************************/
 
 
@@ -79,26 +89,26 @@ typedef struct {
 //  Секция прототипов глобальных функций
 extern float
 NINTEG_IntegrateAnglVelocityTrapezium(
-  float *pPreviousAngleVelocity,
-  float *pCurrentAngleVelocity,
-  float deltaTimeInSec);
+	float *pPreviousAngleVelocity,
+	float *pCurrentAngleVelocity,
+	float deltaTimeInSec);
 
 extern void
 NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
-  float *pPreviousAngleVelocityArr,
-  float *pCurrentAngleVelocityArr,
-  float deltaTimeInSec,
-  float *pDeltaAngelsArr);
+	float *pPreviousAngleVelocityArr,
+	float *pCurrentAngleVelocityArr,
+	float deltaTimeInSec,
+	float *pDeltaAngelsArr);
 
 extern float
-NINTEG_FindDeltaTrapezium(
-  NINTEG_find_delta_trapezium_s *pStruct,
-  float data);
+NINTEG_Trapz(
+	ninteg_trapz_s *pStruct,
+	float data);
 
 extern void
-NINTEG_InitIntegrateTrapeziumStruct(
-  NINTEG_find_delta_trapezium_s *pStruct,
-  float dT);
+NINTEG_InitStruct_Trapz(
+	ninteg_trapz_s *pStruct,
+	float dT);
 /******************************************************************************/
 
 

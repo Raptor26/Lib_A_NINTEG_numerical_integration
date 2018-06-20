@@ -133,18 +133,31 @@ float NINTEG_IntegrateAnglVelocityTrapezium(
  *      @note   (Приращение за промежуток времени между вызовами функии
  *              "NINTEG_FindDeltaTrapezium()");
  */
-float NINTEG_FindDeltaTrapezium(
-	NINTEG_find_delta_trapezium_s *pStruct,
+float NINTEG_Trapz(
+	ninteg_trapz_s *pTrapz_s,
 	float newData)
 {
 	// Численное интегрирование методом трапеций;
-	pStruct->deltaData =
-		(pStruct->previousData + newData) * pStruct->dT * 0.5f;
+	pTrapz_s->deltaData =
+		(pTrapz_s->previousData + newData) * pTrapz_s->dT * 0.5f;
 
 	// Копирование текущего значения переменной в переменную данных за предыдущий момент времени;
-	pStruct->previousData = newData;
-	// Возврат интегрированного значения;
-	return pStruct->deltaData;
+	pTrapz_s->previousData = newData;
+
+	/* Если разрешено аккумулирование методом трапеций */
+	if (pTrapz_s->tumblers_s.accumEn == 1)
+	{
+		/* Инкремент аккумулятора */
+		pTrapz_s->accumData += pTrapz_s->deltaData;
+
+		/* Возврат аккумулированного значения */
+		return (pTrapz_s->accumData);
+	}
+	else
+	{
+		/* Возврат дельты за промежуток времени */
+		return pTrapz_s->deltaData;
+	}
 }
 
 /**
@@ -155,13 +168,14 @@ float NINTEG_FindDeltaTrapezium(
  * @param   dT: Период времени в секундах, для нахождения приращения величины;
  * @return  None;
  */
-void NINTEG_InitFindDeltaTrapeziumStruct(
-	NINTEG_find_delta_trapezium_s *pStruct,
+void NINTEG_InitStruct_Trapz(
+	ninteg_trapz_s *pStruct,
 	float dT)
 {
 	pStruct->dT = dT;
 	pStruct->deltaData = 0.0f;
 	pStruct->previousData = 0.0f;
+	pStruct->tumblers_s.accumEn = 0;
 }
 /*============================================================================*/
 /******************************************************************************/
