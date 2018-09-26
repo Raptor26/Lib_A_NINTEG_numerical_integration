@@ -177,6 +177,24 @@ void NINTEG_InitStruct_Trapz(
 	pStruct->previousData = 0.0f;
 	pStruct->tumblers_s.accumEn = 0;
 }
+
+ninteg_fnc_status_e
+NINTEG_Trapz_Init(
+	ninteg_trapz_s			 	*p_s,
+	ninteg_trapz_InitStruct_s 	*pInitStruct)
+{
+	if (pInitStruct->integratePeriod == (float) 0.0)
+	{
+		return NINTEG_ERROR;
+	}
+
+	p_s->dT 					= pInitStruct->integratePeriod;
+	p_s->deltaData 				= 0.0;
+	p_s->previousData 			= 0.0;
+	p_s->tumblers_s.accumEn 	= pInitStruct->accumulate_flag;
+
+	return NINTEG_SUCCESS;
+}
 /*============================================================================*/
 /******************************************************************************/
 

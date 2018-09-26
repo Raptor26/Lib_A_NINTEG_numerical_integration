@@ -38,6 +38,18 @@
 /******************************************************************************/
 //  Секция определения типов
 
+typedef enum
+{
+	NINTEG_ENABLE = 0,
+	NINTEG_DISABLE = 1,
+}ninteg_tumblers_status_e;
+
+typedef enum
+{
+	NINTEG_ERROR = 0,
+	NINTEG_SUCCESS,
+}ninteg_fnc_status_e;
+
 typedef struct {
 	float anglVelocity;
 	float dT;
@@ -74,9 +86,19 @@ typedef struct {
 
 	struct
 	{
-		size_t accumEn;
+		ninteg_tumblers_status_e accumEn;
 	} tumblers_s;
 } ninteg_trapz_s;
+
+typedef struct
+{
+	float integratePeriod;						/*!< 	Период интегрирования в секундах */
+
+	ninteg_tumblers_status_e accumulate_flag;	/*!<	Включение аккумулирования выходной величины.
+														Может иметь одно из следующих значений:
+														@arg @ref NINTEG_ENABLE
+														@arg @ref NINTEG_DISABLE */
+} ninteg_trapz_InitStruct_s;
 /******************************************************************************/
 
 
@@ -109,6 +131,11 @@ extern void
 NINTEG_InitStruct_Trapz(
 	ninteg_trapz_s *pStruct,
 	float dT);
+
+extern ninteg_fnc_status_e
+NINTEG_Trapz_Init(
+	ninteg_trapz_s			 	*p_s,
+	ninteg_trapz_InitStruct_s 	*pInitStruct);
 /******************************************************************************/
 
 
