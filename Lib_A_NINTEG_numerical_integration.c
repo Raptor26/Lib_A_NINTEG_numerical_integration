@@ -181,9 +181,18 @@ void NINTEG_InitStruct_Trapz(
 	pStruct->tumblers_s.accumEn = 0;
 }
 
+/**
+ * @brief	Функция выполняет инициализацию структуры @ref ninteg_trapz_s;
+ * @param[out]	*pTrapzStruct:	Указатель на структуру @ref ninteg_trapz_s
+ * @param[in]	*pInitStruct:	Указатель на структуру @ref ninteg_trapz_InitStruct_s
+ * @return	ninteg_fnc_status_e:
+ * 			- NINTEG_ERROR:	Если неверно задан один из параметров в
+ * 							структуре @ref ninteg_trapz_InitStruct_s
+ * 			- NINTEG_SUCCESS: Инициализация прошла успешно
+ */
 ninteg_fnc_status_e
 NINTEG_Trapz_Init(
-	ninteg_trapz_s			 	*p_s,
+	ninteg_trapz_s			 	*pTrapzStruct,
 	ninteg_trapz_InitStruct_s 	*pInitStruct)
 {
 	if (pInitStruct->integratePeriod == (__NUNTEG_FPT__) 0.0)
@@ -191,12 +200,20 @@ NINTEG_Trapz_Init(
 		return NINTEG_ERROR;
 	}
 
-	p_s->dT 					= pInitStruct->integratePeriod;
-	p_s->deltaData 				= 0.0;
-	p_s->previousData 			= 0.0;
-	p_s->tumblers_s.accumEn 	= pInitStruct->accumulate_flag;
+	pTrapzStruct->dT 					= pInitStruct->integratePeriod;
+	pTrapzStruct->deltaData 			= 0.0;
+	pTrapzStruct->previousData 			= 0.0;
+	pTrapzStruct->tumblers_s.accumEn 	= pInitStruct->accumulate_flag;
 
 	return NINTEG_SUCCESS;
+}
+
+void
+NINTEG_Trapz_StructInit(
+	ninteg_trapz_InitStruct_s *pInitStruct)
+{
+	pInitStruct->accumulate_flag 	= NINTEG_DISABLE;
+	pInitStruct->integratePeriod 	= (__NUNTEG_FPT__) 1.0;
 }
 /*============================================================================*/
 /******************************************************************************/
