@@ -136,6 +136,10 @@ NINTEG_InitStruct_Trapz(
 	ninteg_trapz_s *pStruct,
 	__NUNTEG_FPT__ dT);
 
+extern void
+NINTEG_Trapz_StructInit(
+	ninteg_trapz_InitStruct_s *pInitStruct);
+
 extern ninteg_fnc_status_e
 NINTEG_Trapz_Init(
 	ninteg_trapz_s			 	*p_s,
