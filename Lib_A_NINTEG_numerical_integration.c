@@ -81,38 +81,41 @@
 
 /*============================================================================*/
 void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
-	float *pPreviousAngleVelocityArr,
-	float *pCurrentAngleVelocityArr,
-	float deltaTimeInSec,
-	float *pDeltaAnglesArr)
+	__NUNTEG_FPT__ *pPreviousAngleVelocityArr,
+	__NUNTEG_FPT__ *pCurrentAngleVelocityArr,
+	__NUNTEG_FPT__ deltaTimeInSec,
+	__NUNTEG_FPT__ *pDeltaAnglesArr)
 {
 	//  Нахождение дельты угла по оси X;
-	*pDeltaAnglesArr++ = NINTEG_IntegrateAnglVelocityTrapezium(
-							 pPreviousAngleVelocityArr++,
-							 pCurrentAngleVelocityArr++,
-							 deltaTimeInSec);
+	*pDeltaAnglesArr++ =
+		NINTEG_IntegrateAnglVelocityTrapezium(
+			pPreviousAngleVelocityArr++,
+			pCurrentAngleVelocityArr++,
+			deltaTimeInSec);
 
 	//  Нахождение дельты угла по оси Y;
-	*pDeltaAnglesArr++ = NINTEG_IntegrateAnglVelocityTrapezium(
-							 pPreviousAngleVelocityArr++,
-							 pCurrentAngleVelocityArr++,
-							 deltaTimeInSec);
+	*pDeltaAnglesArr++ =
+		NINTEG_IntegrateAnglVelocityTrapezium(
+			pPreviousAngleVelocityArr++,
+			pCurrentAngleVelocityArr++,
+			deltaTimeInSec);
 
 	//  Нахождение дельты угла по оси Z;
-	*pDeltaAnglesArr = NINTEG_IntegrateAnglVelocityTrapezium(
-						   pPreviousAngleVelocityArr,
-						   pCurrentAngleVelocityArr,
-						   deltaTimeInSec);
+	*pDeltaAnglesArr =
+		NINTEG_IntegrateAnglVelocityTrapezium(
+			pPreviousAngleVelocityArr,
+			pCurrentAngleVelocityArr,
+			deltaTimeInSec);
 }
 
-float NINTEG_IntegrateAnglVelocityTrapezium(
-	float *pPreviousAngleVelocity,
-	float *pCurrentAngleVelocity,
-	float deltaTimeInSec)
+__NUNTEG_FPT__ NINTEG_IntegrateAnglVelocityTrapezium(
+	__NUNTEG_FPT__ *pPreviousAngleVelocity,
+	__NUNTEG_FPT__ *pCurrentAngleVelocity,
+	__NUNTEG_FPT__ deltaTimeInSec)
 {
 	//  Нахождение угла на основе текущей угловой скорости и угловой скорости в
 	//  предыдущий момент времени;
-	float deltaAngel =
+	__NUNTEG_FPT__ deltaAngel =
 		(*pPreviousAngleVelocity + *pCurrentAngleVelocity) * deltaTimeInSec * 0.5f;
 
 	//  Копирование текущей угловой скорости в переменную угловой скорости за
@@ -133,9 +136,9 @@ float NINTEG_IntegrateAnglVelocityTrapezium(
  *      @note   (Приращение за промежуток времени между вызовами функии
  *              "NINTEG_FindDeltaTrapezium()");
  */
-float NINTEG_Trapz(
+__NUNTEG_FPT__ NINTEG_Trapz(
 	ninteg_trapz_s *pTrapz_s,
-	float newData)
+	__NUNTEG_FPT__ newData)
 {
 	// Численное интегрирование методом трапеций;
 	pTrapz_s->deltaData =
@@ -170,7 +173,7 @@ float NINTEG_Trapz(
  */
 void NINTEG_InitStruct_Trapz(
 	ninteg_trapz_s *pStruct,
-	float dT)
+	__NUNTEG_FPT__ dT)
 {
 	pStruct->dT = dT;
 	pStruct->deltaData = 0.0f;
@@ -183,7 +186,7 @@ NINTEG_Trapz_Init(
 	ninteg_trapz_s			 	*p_s,
 	ninteg_trapz_InitStruct_s 	*pInitStruct)
 {
-	if (pInitStruct->integratePeriod == (float) 0.0)
+	if (pInitStruct->integratePeriod == (__NUNTEG_FPT__) 0.0)
 	{
 		return NINTEG_ERROR;
 	}

@@ -37,22 +37,26 @@
 
 /******************************************************************************/
 //  Секция определения типов
+#if !defined (__NUNTEG_FPT__)
+#error 'Please, define __NUNTEG_FPT__, default value is float or double'
+#endif
+
 
 typedef enum
 {
 	NINTEG_ENABLE = 0,
 	NINTEG_DISABLE = 1,
-}ninteg_tumblers_status_e;
+} ninteg_tumblers_status_e;
 
 typedef enum
 {
 	NINTEG_ERROR = 0,
 	NINTEG_SUCCESS,
-}ninteg_fnc_status_e;
+} ninteg_fnc_status_e;
 
 typedef struct {
-	float anglVelocity;
-	float dT;
+	__NUNTEG_FPT__ anglVelocity;
+	__NUNTEG_FPT__ dT;
 	size_t integrateTacktFlag;
 } NINTEG_data_for_integrate_s;
 
@@ -64,25 +68,25 @@ typedef struct {
 	/**
 	 * @brief   Значение приращения угла на момент завершения работы
 	 *          функции NINTEG_FindDeltaTrapezium();
-	 * @note    Выходное значение фукнции NINTEG_FindDeltaTrapezium();
+	 * @note    Выходное значение функции NINTEG_FindDeltaTrapezium();
 	 */
-	float deltaData;
+	__NUNTEG_FPT__ deltaData;
 
 	/**
 	 * @brief   Период в секундах между измерениями;
 	 */
-	float dT;
+	__NUNTEG_FPT__ dT;
 
 	/**
 	 * @brief   Измерения, которые были получены в предыдущем
 	 *          вызове функции NINTEG_FindDeltaTrapezium();
 	 */
-	float previousData;
+	__NUNTEG_FPT__ previousData;
 
-    /**
-     * @brief Аккумулятор интегрирования
-     */
-	float accumData;
+	/**
+	 * @brief Аккумулятор интегрирования
+	 */
+	__NUNTEG_FPT__ accumData;
 
 	struct
 	{
@@ -92,7 +96,7 @@ typedef struct {
 
 typedef struct
 {
-	float integratePeriod;						/*!< 	Период интегрирования в секундах */
+	__NUNTEG_FPT__ integratePeriod;						/*!< 	Период интегрирования в секундах */
 
 	ninteg_tumblers_status_e accumulate_flag;	/*!<	Включение аккумулирования выходной величины.
 														Может иметь одно из следующих значений:
@@ -109,28 +113,28 @@ typedef struct
 
 /******************************************************************************/
 //  Секция прототипов глобальных функций
-extern float
+extern __NUNTEG_FPT__
 NINTEG_IntegrateAnglVelocityTrapezium(
-	float *pPreviousAngleVelocity,
-	float *pCurrentAngleVelocity,
-	float deltaTimeInSec);
+	__NUNTEG_FPT__ *pPreviousAngleVelocity,
+	__NUNTEG_FPT__ *pCurrentAngleVelocity,
+	__NUNTEG_FPT__ deltaTimeInSec);
 
 extern void
 NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
-	float *pPreviousAngleVelocityArr,
-	float *pCurrentAngleVelocityArr,
-	float deltaTimeInSec,
-	float *pDeltaAngelsArr);
+	__NUNTEG_FPT__ *pPreviousAngleVelocityArr,
+	__NUNTEG_FPT__ *pCurrentAngleVelocityArr,
+	__NUNTEG_FPT__ deltaTimeInSec,
+	__NUNTEG_FPT__ *pDeltaAngelsArr);
 
-extern float
+extern __NUNTEG_FPT__
 NINTEG_Trapz(
 	ninteg_trapz_s *pStruct,
-	float data);
+	__NUNTEG_FPT__ data);
 
 extern void
 NINTEG_InitStruct_Trapz(
 	ninteg_trapz_s *pStruct,
-	float dT);
+	__NUNTEG_FPT__ dT);
 
 extern ninteg_fnc_status_e
 NINTEG_Trapz_Init(
