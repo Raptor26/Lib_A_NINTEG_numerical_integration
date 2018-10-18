@@ -73,6 +73,10 @@
 
 /******************************************************************************/
 // Секция прототипов локальных функций
+static __NUNTEG_FPT__
+RestrictionSaturation (
+	__NUNTEG_FPT__ value,
+	__NUNTEG_FPT__ saturation);
 /******************************************************************************/
 
 
@@ -133,7 +137,7 @@ __NUNTEG_FPT__ NINTEG_IntegrateAnglVelocityTrapezium(
  *                      приращения величины за промежуток времени;
  * @param   newData:    Новое значение для нахождения приращения;
  * @return  Приращение величины за промежуток времени "dT".
- *      @note   (Приращение за промежуток времени между вызовами функии
+ *      @note   (Приращение за промежуток времени между вызовами функции
  *              "NINTEG_FindDeltaTrapezium()");
  */
 __NUNTEG_FPT__ NINTEG_Trapz(
@@ -148,10 +152,15 @@ __NUNTEG_FPT__ NINTEG_Trapz(
 	pTrapz_s->previousData = newData;
 
 	/* Если разрешено аккумулирование методом трапеций */
-	if (pTrapz_s->tumblers_s.accumEn == 1)
+	if (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE)
 	{
 		/* Инкремент аккумулятора */
 		pTrapz_s->accumData += pTrapz_s->deltaData;
+
+		pTrapz_s->accumData =
+			RestrictionSaturation(
+				pTrapz_s->accumData,
+				pTrapz_s->accumDataSaturation);
 
 		/* Возврат аккумулированного значения */
 		return (pTrapz_s->accumData);
@@ -195,7 +204,8 @@ NINTEG_Trapz_Init(
 	ninteg_trapz_s			 	*pTrapzStruct,
 	ninteg_trapz_InitStruct_s 	*pInitStruct)
 {
-	if (pInitStruct->integratePeriod == (__NUNTEG_FPT__) 0.0)
+	if ((pInitStruct->integratePeriod == (__NUNTEG_FPT__) 0.0)
+			&& (pInitStruct->accumDataSaturation == (__NUNTEG_FPT__) 0.0))
 	{
 		return NINTEG_ERROR;
 	}
@@ -204,6 +214,7 @@ NINTEG_Trapz_Init(
 	pTrapzStruct->deltaData 			= 0.0;
 	pTrapzStruct->previousData 			= 0.0;
 	pTrapzStruct->tumblers_s.accumEn 	= pInitStruct->accumulate_flag;
+	pTrapzStruct->accumDataSaturation	= pInitStruct->accumDataSaturation;
 
 	return NINTEG_SUCCESS;
 }
@@ -214,6 +225,29 @@ NINTEG_Trapz_StructInit(
 {
 	pInitStruct->accumulate_flag 	= NINTEG_DISABLE;
 	pInitStruct->integratePeriod 	= (__NUNTEG_FPT__) 1.0;
+}
+
+__NUNTEG_FPT__
+RestrictionSaturation (
+	__NUNTEG_FPT__ value,
+	__NUNTEG_FPT__ saturation)
+{
+	/*    Ограничение насыщения выходного параметра */
+	//    Если переменная насыщения не равна "0.0":
+	if (saturation != (__NUNTEG_FPT__) 0.0f)
+	{
+		//    Если выходное значение больше положительного значения переменной насыщения:
+		if (value > saturation)
+		{
+			value = saturation;
+		}
+		//  Если выходное значение меньше отрицательного значения переменной насыщения:
+		else if (value < (-saturation))
+		{
+			value = -saturation;
+		}
+	}
+	return value;
 }
 /*============================================================================*/
 /******************************************************************************/
