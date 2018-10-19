@@ -44,8 +44,8 @@
 
 typedef enum
 {
-	NINTEG_ENABLE = 0,
-	NINTEG_DISABLE = 1,
+  	NINTEG_DISABLE = 0,
+	NINTEG_ENABLE,
 } ninteg_tumblers_status_e;
 
 typedef enum
