@@ -44,7 +44,7 @@
 
 typedef enum
 {
-  	NINTEG_DISABLE = 0,
+	NINTEG_DISABLE = 0,
 	NINTEG_ENABLE,
 } ninteg_tumblers_status_e;
 
@@ -109,7 +109,7 @@ typedef struct
 														Может иметь одно из следующих значений:
 														@arg @ref NINTEG_ENABLE
 														@arg @ref NINTEG_DISABLE */
-} ninteg_trapz_InitStruct_s;
+} ninteg_trapz_init_struct_s;
 /******************************************************************************/
 
 
@@ -139,18 +139,13 @@ NINTEG_Trapz(
 	__NUNTEG_FPT__ data);
 
 extern void
-NINTEG_InitStruct_Trapz(
-	ninteg_trapz_s *pStruct,
-	__NUNTEG_FPT__ dT);
-
-extern void
 NINTEG_Trapz_StructInit(
-	ninteg_trapz_InitStruct_s *pInitStruct);
+	ninteg_trapz_init_struct_s *pInitStruct);
 
 extern ninteg_fnc_status_e
 NINTEG_Trapz_Init(
 	ninteg_trapz_s			 	*p_s,
-	ninteg_trapz_InitStruct_s 	*pInitStruct);
+	ninteg_trapz_init_struct_s 	*pInitStruct);
 /******************************************************************************/
 
 

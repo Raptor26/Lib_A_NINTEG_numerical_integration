@@ -173,24 +173,6 @@ __NUNTEG_FPT__ NINTEG_Trapz(
 }
 
 /**
- * @brief   Функция инициализирует структуру типа NINTEG_find_delta_trapezium_s;
- * @param   *pStruct:   Указатель на структуру, в которой содержатся данные для
- *                      нахождения дельты величины между вызовами функции
- *                      NINTEG_FindDeltaTrapezium();
- * @param   dT: Период времени в секундах, для нахождения приращения величины;
- * @return  None;
- */
-void NINTEG_InitStruct_Trapz(
-	ninteg_trapz_s *pStruct,
-	__NUNTEG_FPT__ dT)
-{
-	pStruct->dT = dT;
-	pStruct->deltaData = 0.0f;
-	pStruct->previousData = 0.0f;
-	pStruct->tumblers_s.accumEn = 0;
-}
-
-/**
  * @brief	Функция выполняет инициализацию структуры @ref ninteg_trapz_s;
  * @param[out]	*pTrapzStruct:	Указатель на структуру @ref ninteg_trapz_s
  * @param[in]	*pInitStruct:	Указатель на структуру @ref ninteg_trapz_InitStruct_s
@@ -202,7 +184,7 @@ void NINTEG_InitStruct_Trapz(
 ninteg_fnc_status_e
 NINTEG_Trapz_Init(
 	ninteg_trapz_s			 	*pTrapzStruct,
-	ninteg_trapz_InitStruct_s 	*pInitStruct)
+	ninteg_trapz_init_struct_s 	*pInitStruct)
 {
 	if ((pInitStruct->integratePeriod == (__NUNTEG_FPT__) 0.0)
 			&& (pInitStruct->accumDataSaturation == (__NUNTEG_FPT__) 0.0))
@@ -221,10 +203,11 @@ NINTEG_Trapz_Init(
 
 void
 NINTEG_Trapz_StructInit(
-	ninteg_trapz_InitStruct_s *pInitStruct)
+	ninteg_trapz_init_struct_s *pInitStruct)
 {
-	pInitStruct->accumulate_flag 	= NINTEG_DISABLE;
-	pInitStruct->integratePeriod 	= (__NUNTEG_FPT__) 1.0;
+	pInitStruct->accumulate_flag		= NINTEG_DISABLE;
+	pInitStruct->integratePeriod		= (__NUNTEG_FPT__) 0.0;
+	pInitStruct->accumDataSaturation	= (__NUNTEG_FPT__)0.0;
 }
 
 __NUNTEG_FPT__
