@@ -186,19 +186,22 @@ NINTEG_Trapz_Init(
 	ninteg_trapz_s			 	*pTrapzStruct,
 	ninteg_trapz_init_struct_s 	*pInitStruct)
 {
-	if ((pInitStruct->integratePeriod == (__NUNTEG_FPT__) 0.0)
-			&& (pInitStruct->accumDataSaturation == (__NUNTEG_FPT__) 0.0))
+	if (pInitStruct->integratePeriod == ((__NUNTEG_FPT__) 0.0))
 	{
-		return NINTEG_ERROR;
+		pTrapzStruct->initStatus_e = NINTEG_ERROR;
+	}
+	else
+	{
+		pTrapzStruct->dT 					= pInitStruct->integratePeriod;
+		pTrapzStruct->deltaData 			= 0.0;
+		pTrapzStruct->previousData 			= 0.0;
+		pTrapzStruct->tumblers_s.accumEn 	= pInitStruct->accumulate_flag;
+		pTrapzStruct->accumDataSaturation	= pInitStruct->accumDataSaturation;
+
+		pTrapzStruct->initStatus_e = NINTEG_SUCCESS;
 	}
 
-	pTrapzStruct->dT 					= pInitStruct->integratePeriod;
-	pTrapzStruct->deltaData 			= 0.0;
-	pTrapzStruct->previousData 			= 0.0;
-	pTrapzStruct->tumblers_s.accumEn 	= pInitStruct->accumulate_flag;
-	pTrapzStruct->accumDataSaturation	= pInitStruct->accumDataSaturation;
-
-	return NINTEG_SUCCESS;
+	return (pTrapzStruct->initStatus_e);
 }
 
 void
@@ -207,7 +210,7 @@ NINTEG_Trapz_StructInit(
 {
 	pInitStruct->accumulate_flag		= NINTEG_DISABLE;
 	pInitStruct->integratePeriod		= (__NUNTEG_FPT__) 0.0;
-	pInitStruct->accumDataSaturation	= (__NUNTEG_FPT__)0.0;
+	pInitStruct->accumDataSaturation	= (__NUNTEG_FPT__) 0.0;
 }
 
 __NUNTEG_FPT__

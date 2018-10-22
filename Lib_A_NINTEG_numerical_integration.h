@@ -84,14 +84,19 @@ typedef struct {
 	__NUNTEG_FPT__ previousData;
 
 	/**
-	 * @brief Аккумулятор интегрирования
+	 * @brief 	Аккумулятор интегрирования
 	 */
 	__NUNTEG_FPT__ accumData;
 
 	/**
-	 * @brief Значение насыщения аккумулированных данных
+	 * @brief 	Значение насыщения аккумулированных данных
 	 */
 	__NUNTEG_FPT__ accumDataSaturation;
+
+	/**
+	 * @brief 	Статус инициализации структуры
+	 */
+	ninteg_fnc_status_e initStatus_e;
 
 	struct
 	{
@@ -103,7 +108,7 @@ typedef struct
 {
 	__NUNTEG_FPT__ integratePeriod;						/*!< 	Период интегрирования в секундах */
 
-	__NUNTEG_FPT__ accumDataSaturation;
+	__NUNTEG_FPT__ accumDataSaturation;			/*!< Значение насыщения аккумулированного значения */
 
 	ninteg_tumblers_status_e accumulate_flag;	/*!<	Включение аккумулирования выходной величины.
 														Может иметь одно из следующих значений:
