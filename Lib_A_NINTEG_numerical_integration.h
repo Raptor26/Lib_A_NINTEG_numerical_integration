@@ -37,8 +37,19 @@
 
 /******************************************************************************/
 //  Секция определения типов
-#if !defined (__NUNTEG_FPT__)
-#error 'Please, define __NUNTEG_FPT__, default value is float or double'
+#if !defined (__NINTEG_FPT__)
+#error "Please, set __NINTEG_FPT__ = 'f' or 'd'"
+#endif
+
+/* Если __NINTEG_FPT__ равен float */
+#if 	__NINTEG_FPT__ == 'f'
+#undef 	__NINTEG_FPT__
+#define __NINTEG_FPT__		float
+
+/* Если __NINTEG_FPT__ равен double */
+#elif 	__NINTEG_FPT__ == 'd'
+#undef  __NINTEG_FPT__
+#define __NINTEG_FPT__		double
 #endif
 
 
@@ -55,8 +66,8 @@ typedef enum
 } ninteg_fnc_status_e;
 
 typedef struct {
-	__NUNTEG_FPT__ anglVelocity;
-	__NUNTEG_FPT__ dT;
+	__NINTEG_FPT__ anglVelocity;
+	__NINTEG_FPT__ dT;
 	size_t integrateTacktFlag;
 } NINTEG_data_for_integrate_s;
 
@@ -70,28 +81,28 @@ typedef struct {
 	 *          функции NINTEG_FindDeltaTrapezium();
 	 * @note    Выходное значение функции NINTEG_FindDeltaTrapezium();
 	 */
-	__NUNTEG_FPT__ deltaData;
+	__NINTEG_FPT__ deltaData;
 
 	/**
 	 * @brief   Период в секундах между измерениями;
 	 */
-	__NUNTEG_FPT__ dT;
+	__NINTEG_FPT__ dT;
 
 	/**
 	 * @brief   Измерения, которые были получены в предыдущем
 	 *          вызове функции NINTEG_FindDeltaTrapezium();
 	 */
-	__NUNTEG_FPT__ previousData;
+	__NINTEG_FPT__ previousData;
 
 	/**
 	 * @brief 	Аккумулятор интегрирования
 	 */
-	__NUNTEG_FPT__ accumData;
+	__NINTEG_FPT__ accumData;
 
 	/**
 	 * @brief 	Значение насыщения аккумулированных данных
 	 */
-	__NUNTEG_FPT__ accumDataSaturation;
+	__NINTEG_FPT__ accumDataSaturation;
 
 	/**
 	 * @brief 	Статус инициализации структуры
@@ -106,9 +117,9 @@ typedef struct {
 
 typedef struct
 {
-	__NUNTEG_FPT__ integratePeriod;						/*!< 	Период интегрирования в секундах */
+	__NINTEG_FPT__ integratePeriod;						/*!< 	Период интегрирования в секундах */
 
-	__NUNTEG_FPT__ accumDataSaturation;			/*!< Значение насыщения аккумулированного значения */
+	__NINTEG_FPT__ accumDataSaturation;			/*!< Значение насыщения аккумулированного значения */
 
 	ninteg_tumblers_status_e accumulate_flag;	/*!<	Включение аккумулирования выходной величины.
 														Может иметь одно из следующих значений:
@@ -125,23 +136,23 @@ typedef struct
 
 /******************************************************************************/
 //  Секция прототипов глобальных функций
-extern __NUNTEG_FPT__
+extern __NINTEG_FPT__
 NINTEG_IntegrateAnglVelocityTrapezium(
-	__NUNTEG_FPT__ *pPreviousAngleVelocity,
-	__NUNTEG_FPT__ *pCurrentAngleVelocity,
-	__NUNTEG_FPT__ deltaTimeInSec);
+	__NINTEG_FPT__ *pPreviousAngleVelocity,
+	__NINTEG_FPT__ *pCurrentAngleVelocity,
+	__NINTEG_FPT__ deltaTimeInSec);
 
 extern void
 NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
-	__NUNTEG_FPT__ *pPreviousAngleVelocityArr,
-	__NUNTEG_FPT__ *pCurrentAngleVelocityArr,
-	__NUNTEG_FPT__ deltaTimeInSec,
-	__NUNTEG_FPT__ *pDeltaAngelsArr);
+	__NINTEG_FPT__ *pPreviousAngleVelocityArr,
+	__NINTEG_FPT__ *pCurrentAngleVelocityArr,
+	__NINTEG_FPT__ deltaTimeInSec,
+	__NINTEG_FPT__ *pDeltaAngelsArr);
 
-extern __NUNTEG_FPT__
+extern __NINTEG_FPT__
 NINTEG_Trapz(
 	ninteg_trapz_s *pStruct,
-	__NUNTEG_FPT__ data);
+	__NINTEG_FPT__ data);
 
 extern void
 NINTEG_Trapz_StructInit(

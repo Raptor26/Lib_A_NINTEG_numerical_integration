@@ -73,10 +73,10 @@
 
 /******************************************************************************/
 // Секция прототипов локальных функций
-static __NUNTEG_FPT__
+static __NINTEG_FPT__
 RestrictionSaturation (
-	__NUNTEG_FPT__ value,
-	__NUNTEG_FPT__ saturation);
+	__NINTEG_FPT__ value,
+	__NINTEG_FPT__ saturation);
 /******************************************************************************/
 
 
@@ -85,10 +85,10 @@ RestrictionSaturation (
 
 /*============================================================================*/
 void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
-	__NUNTEG_FPT__ *pPreviousAngleVelocityArr,
-	__NUNTEG_FPT__ *pCurrentAngleVelocityArr,
-	__NUNTEG_FPT__ deltaTimeInSec,
-	__NUNTEG_FPT__ *pDeltaAnglesArr)
+	__NINTEG_FPT__ *pPreviousAngleVelocityArr,
+	__NINTEG_FPT__ *pCurrentAngleVelocityArr,
+	__NINTEG_FPT__ deltaTimeInSec,
+	__NINTEG_FPT__ *pDeltaAnglesArr)
 {
 	//  Нахождение дельты угла по оси X;
 	*pDeltaAnglesArr++ =
@@ -112,14 +112,14 @@ void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
 			deltaTimeInSec);
 }
 
-__NUNTEG_FPT__ NINTEG_IntegrateAnglVelocityTrapezium(
-	__NUNTEG_FPT__ *pPreviousAngleVelocity,
-	__NUNTEG_FPT__ *pCurrentAngleVelocity,
-	__NUNTEG_FPT__ deltaTimeInSec)
+__NINTEG_FPT__ NINTEG_IntegrateAnglVelocityTrapezium(
+	__NINTEG_FPT__ *pPreviousAngleVelocity,
+	__NINTEG_FPT__ *pCurrentAngleVelocity,
+	__NINTEG_FPT__ deltaTimeInSec)
 {
 	//  Нахождение угла на основе текущей угловой скорости и угловой скорости в
 	//  предыдущий момент времени;
-	__NUNTEG_FPT__ deltaAngel =
+	__NINTEG_FPT__ deltaAngel =
 		(*pPreviousAngleVelocity + *pCurrentAngleVelocity) * deltaTimeInSec * 0.5f;
 
 	//  Копирование текущей угловой скорости в переменную угловой скорости за
@@ -140,9 +140,10 @@ __NUNTEG_FPT__ NINTEG_IntegrateAnglVelocityTrapezium(
  *      @note   (Приращение за промежуток времени между вызовами функции
  *              "NINTEG_FindDeltaTrapezium()");
  */
-__NUNTEG_FPT__ NINTEG_Trapz(
+__NINTEG_FPT__
+NINTEG_Trapz(
 	ninteg_trapz_s *pTrapz_s,
-	__NUNTEG_FPT__ newData)
+	__NINTEG_FPT__ newData)
 {
 	// Численное интегрирование методом трапеций;
 	pTrapz_s->deltaData =
@@ -186,7 +187,7 @@ NINTEG_Trapz_Init(
 	ninteg_trapz_s			 	*pTrapzStruct,
 	ninteg_trapz_init_struct_s 	*pInitStruct)
 {
-	if (pInitStruct->integratePeriod == ((__NUNTEG_FPT__) 0.0))
+	if (pInitStruct->integratePeriod == ((__NINTEG_FPT__) 0.0))
 	{
 		pTrapzStruct->initStatus_e = NINTEG_ERROR;
 	}
@@ -209,18 +210,18 @@ NINTEG_Trapz_StructInit(
 	ninteg_trapz_init_struct_s *pInitStruct)
 {
 	pInitStruct->accumulate_flag		= NINTEG_DISABLE;
-	pInitStruct->integratePeriod		= (__NUNTEG_FPT__) 0.0;
-	pInitStruct->accumDataSaturation	= (__NUNTEG_FPT__) 0.0;
+	pInitStruct->integratePeriod		= (__NINTEG_FPT__) 0.0;
+	pInitStruct->accumDataSaturation	= (__NINTEG_FPT__) 0.0;
 }
 
-__NUNTEG_FPT__
+__NINTEG_FPT__
 RestrictionSaturation (
-	__NUNTEG_FPT__ value,
-	__NUNTEG_FPT__ saturation)
+	__NINTEG_FPT__ value,
+	__NINTEG_FPT__ saturation)
 {
 	/*    Ограничение насыщения выходного параметра */
 	//    Если переменная насыщения не равна "0.0":
-	if (saturation != (__NUNTEG_FPT__) 0.0f)
+	if (saturation != (__NINTEG_FPT__) 0.0f)
 	{
 		//    Если выходное значение больше положительного значения переменной насыщения:
 		if (value > saturation)
