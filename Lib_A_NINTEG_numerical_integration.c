@@ -53,9 +53,13 @@ NINTEG_Trapz_Init(
 	ninteg_trapz_init_s 	*pInit_s)
 {
 	/* Если период интегрирования равен нулю */
-	if (pInit_s->integratePeriod == ((__NINTEG_FPT__) 0.0)
-		/* Если ограничение насыщения равно нулю */
-		|| (pInit_s->accumDataSaturation == ((__NINTEG_FPT__) 0.0)))
+	if (pInit_s->integratePeriod == ((__NINTEG_FPT__) 0.0))
+	{
+		pTrapz_s->initStatus_e = NINTEG_ERROR;
+	}
+	/* Если включено аккумулирование интегратора и не задано насыщение */
+	else if ((pInit_s->accumulate_flag == NINTEG_ENABLE)
+			 && (pInit_s->accumDataSaturation == ((__NINTEG_FPT__) 0.0)))
 	{
 		pTrapz_s->initStatus_e = NINTEG_ERROR;
 	}
