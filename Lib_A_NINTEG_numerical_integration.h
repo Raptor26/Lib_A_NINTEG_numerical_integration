@@ -36,21 +36,24 @@
 
 
 /******************************************************************************/
-//  Секция определения типов
+
+/* |Begin| --> Секция определения типа числа с плавающей точкой ============= */
 #if !defined (__NINTEG_FPT__)
-#error "Please, set __NINTEG_FPT__ = 'f' or 'd'"
+#error "Please, set __NINTEG_FPT__ float or double in macros list"
 #endif
 
-/* Если __NINTEG_FPT__ равен float */
-#if 	__NINTEG_FPT__ == 'f'
-#undef 	__NINTEG_FPT__
-#define __NINTEG_FPT__		float
-
-/* Если __NINTEG_FPT__ равен double */
-#elif 	__NINTEG_FPT__ == 'd'
-#undef  __NINTEG_FPT__
-#define __NINTEG_FPT__		double
+#if !defined (__NINTEG_FPT_SIZE__)
+#error "Please, set __NINTEG_FPT_SIZE__ 4 (that mean float) or 8 (that mean double) in macros list"
 #endif
+
+#if     __NINTEG_FPT_SIZE__ == 4
+
+#elif   __NINTEG_FPT_SIZE__ == 8
+
+#else
+#error "Your compiler uses a non-standard floating point size"
+#endif
+/* |End  | <-- Секция определения типа числа с плавающей точкой ============= */
 
 
 typedef enum
@@ -117,14 +120,14 @@ typedef struct {
 
 typedef struct
 {
-	__NINTEG_FPT__ integratePeriod;						/*!< 	Период интегрирования в секундах */
+	__NINTEG_FPT__ integratePeriod;				/*!< Период интегрирования в секундах */
 
 	__NINTEG_FPT__ accumDataSaturation;			/*!< Значение насыщения аккумулированного значения */
 
-	ninteg_tumblers_status_e accumulate_flag;	/*!<	Включение аккумулирования выходной величины.
-														Может иметь одно из следующих значений:
-														@arg @ref NINTEG_ENABLE
-														@arg @ref NINTEG_DISABLE */
+	ninteg_tumblers_status_e accumulate_flag;	/*!< Включение аккумулирования выходной величины.
+													 Может иметь одно из следующих значений:
+													 	 @arg @ref NINTEG_ENABLE
+													 	 @arg @ref NINTEG_DISABLE */
 } ninteg_trapz_init_struct_s;
 /******************************************************************************/
 
