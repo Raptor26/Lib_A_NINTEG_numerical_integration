@@ -23,6 +23,9 @@
 /*==== |End  | <-- Секция - "MK peripheral libraries" ========================*/
 
 /*==== |Begin| --> Секция - "Extern libraries" ===============================*/
+#if defined (__NINTEG_EXTERN_MODE_ENABLE__)
+	#include "macros_definitions.h"
+#endif
 /*==== |End  | <-- Секция - "Extern libraries" ===============================*/
 /*#### |End  | <-- Секция - "Include" ########################################*/
 
@@ -46,28 +49,74 @@
 #endif
 /* |End  | <-- Секция определения типа числа с плавающей точкой ============= */
 
+/*==== |Begin| --> Секция - Макросы для встраиваемых функций =================*/
 #if defined (__GNUC__)
 
 	/* inline*/
 	#ifndef __NINTEG_INLINE
-		#define __NINTEG_INLINE         inline
+		#define __NINTEG_INLINE          inline
 	#endif
 
 	/* static inline */
 	#ifndef __NINTEG_STATIC_INLINE
-		#define __NINTEG_STATIC_INLINE  static inline
+		#define __NINTEG_STATIC_INLINE   static inline
 	#endif
 
 	/* always inline */
 	#ifndef __NINTEG_ALWAYS_INLINE
-		#define __NINTEG_ALWAYS_INLINE 	inline __attribute__((always_inline)) static
+		#define __NINTEG_ALWAYS_INLINE    inline __attribute__((always_inline)) static
+	#endif
+
+	/* force inline */
+	#ifndef __NINTEG_FORCE_INLINE
+		#define __NINTEG_FORCE_INLINE    inline __attribute__((always_inline))
 	#endif
 
 #else
 	#define __NINTEG_INLINE
-	#define __NINTEG_STATIC_INLINE   	static
+	#define __NINTEG_STATIC_INLINE   static
 	#define __NINTEG_ALWAYS_INLINE
 #endif
+/*==== |End  | <-- Секция - Макросы для встраиваемых функций =================*/
+
+
+/*==== |Begin| --> Секция - Расположение функций библиотеки в специальной
+ *                          области памяти ===================================*/
+#if defined (__NINTEG_FNC_ONCE_MEMORY_LOCATION_NAME__)
+	#if defined (__GNUC__)
+		#define __NINTEG_FNC_ONCE_MEMORY_LOCATION  __attribute__ ((section(__NINTEG_FNC_ONCE_MEMORY_LOCATION_NAME__)))
+	#else
+		#error "You defined the name of the memory area for the function location, but the type of your compiler is not supported by the library. You can delete the macro definition __NINTEG_FNC_ONCE_MEMORY_LOCATION_NAME__ or extend the macro definition __NINTEG_FNC_ONCE_MEMORY_LOCATION for your compiler type"
+	#endif
+#else
+	#define __NINTEG_FNC_ONCE_MEMORY_LOCATION
+#endif
+
+#if defined (__NINTEG_FNC_LOOP_MEMORY_LOCATION_NAME__)
+	#if defined (__GNUC__)
+		#define __NINTEG_FNC_LOOP_MEMORY_LOCATION  __attribute__ ((section(__NINTEG_FNC_LOOP_MEMORY_LOCATION_NAME__)))
+	#else
+		#error "You defined the name of the memory area for the function location, but the type of your compiler is not supported by the library. You can delete the macro definition __NINTEG_FNC_LOOP_MEMORY_LOCATION_NAME__ or extend the macro definition __NINTEG_FNC_LOOP_MEMORY_LOCATION for your compiler type"
+	#endif
+#else
+	#define __NINTEG_FNC_LOOP_MEMORY_LOCATION
+#endif
+/*==== |End  | <-- Секция - Расположение функций библиотеки в специальной
+ *                          области памяти ===================================*/
+
+/*==== |Begin| --> Секция - Локальная оптимизация функций ====================*/
+#if defined (__GNUC__)
+	#ifndef __NINTEG_FNC_ONCE_OPTIMIZE_MODE
+		#define __NINTEG_FNC_ONCE_OPTIMIZE_MODE
+	#endif
+#endif
+
+#if defined (__GNUC__)
+	#ifndef __NINTEG_FNC_LOOP_OPTIMIZE_MODE
+		#define __NINTEG_FNC_LOOP_OPTIMIZE_MODE
+	#endif
+#endif
+/*==== |End| --> Секция - Локальная оптимизация функций ======================*/
 /*#### |End  | <-- Секция - "Определение констант" ###########################*/
 
 
@@ -174,7 +223,7 @@ NINTEG_Trapz_Init(
  *
  * @return    параметр "value" с учетом насыщения, заданного параметром "saturation"
  */
-__NINTEG_ALWAYS_INLINE __NINTEG_FPT__
+__NINTEG_ALWAYS_INLINE __NINTEG_FPT__ __NINTEG_FNC_LOOP_OPTIMIZE_MODE
 RestrictionSaturation (
 	__NINTEG_FPT__ value,
 	__NINTEG_FPT__ saturation)
@@ -196,55 +245,11 @@ RestrictionSaturation (
 	return (value);
 }
 
-/*-------------------------------------------------------------------------*//**
- * @author    Mickle Isaev
- * @date      25-мар-2019
- *
- * @brief    Функция выполняет численное интегрирование методом трапеций
- *           за промежуток времени "dT"
- *
- * @param[in,out]   *pTrapz_s:  Указатель на структуру, в которой содержатся
- * 								данные для выполнения численного интегрирования
- * 								методом трапеций
- * @param[in]    	newData: 	Новое значение величины, интегрирование которой
- *  							необходимо выполнить
- *
- * @return 		Если (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE), то функция возвращает аккумулированное значение интеграла
- *              Если (pTrapz_s->tumblers_s.accumEn != NINTEG_ENABLE), то функция возвращает приращение интеграла
- */
-__NINTEG_ALWAYS_INLINE __NINTEG_FPT__
+extern __NINTEG_FPT__ __NINTEG_FNC_LOOP_OPTIMIZE_MODE
 NINTEG_Trapz(
 	ninteg_trapz_s *pTrapz_s,
-	__NINTEG_FPT__ newData)
-{
-	/* Численное интегрирование методом трапеций */
-	pTrapz_s->deltaData =
-		(pTrapz_s->previousData + newData) * pTrapz_s->dT * (__NINTEG_FPT__) 0.5;
-
-	/* Копирование текущего значения переменной в переменную данных за предыдущий момент времени */
-	pTrapz_s->previousData = newData;
-
-	/* Если разрешено аккумулирование методом трапеций */
-	if (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE)
-	{
-		/* Инкремент аккумулятора */
-		pTrapz_s->accumData += pTrapz_s->deltaData;
-
-		/* Ограничение насыщения */
-		pTrapz_s->accumData =
-			RestrictionSaturation(
-				pTrapz_s->accumData,
-				pTrapz_s->accumDataSaturation);
-
-		/* Возврат аккумулированного значения */
-		return (pTrapz_s->accumData);
-	}
-	else
-	{
-		/* Возврат дельты за промежуток времени */
-		return (pTrapz_s->deltaData);
-	}
-}
+	__NINTEG_FPT__ newData
+) __NINTEG_FNC_LOOP_MEMORY_LOCATION;
 /*#### |End  | <-- Секция - "Прототипы глобальных функций" ###################*/
 
 
