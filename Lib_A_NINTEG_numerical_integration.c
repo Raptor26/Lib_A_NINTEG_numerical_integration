@@ -1,155 +1,108 @@
 /**
- * File:   %<%NAME%>%.%<%EXTENSION%>%
- * Author: %<%USER%>%
- *
- * #############################################################################
- * ########## <Функции, используемые в данном программном модуле> ##############
- * #############################################################################
- * @note    В Данной библиотеки находятся следующие функции:
- *          --------------------------------------------------------------------
- *          --  NINTEG_FindDeltaTrapezium() - функция, для нахождения приращения
- *              величины методом трапеций за промежуток времени "dT";
- *          --  NINTEG_InitFindDeltaTrapeziumStruct() - функция, инициализирующая
- *              структуру, необходимую для функции NINTEG_FindDeltaTrapezium();
- *      @code
- *          ...
- *          // Объявление перменных;
- *          NINTEG_find_delta_trapezium_s   gyrDeltaAngleX,
- *                                          gyrDeltaAngleY,
- *                                          gyrDeltaAngleZ;
- *          float   deltaAngleX,
- *                  deltaAngleY,
- *                  deltaAngleZ;
- *          // Период интегрирования в сек;
- *          float dT = 0.001f;
- *          ...
- *          int main(void)
- *          {
- *              ...
- *              // Инициализация структур;
- *              NINTEG_InitFindDeltaTrapeziumStruct(&gyrDeltaAngleX, dT);
- *              NINTEG_InitFindDeltaTrapeziumStruct(&gyrDeltaAngleY, dT);
- *              NINTEG_InitFindDeltaTrapeziumStruct(&gyrDeltaAngleZ, dT);
- *              ...
- *              while(1)
- *              {
- *                  ...
- *                  deltaAngleX = NINTEG_FindDeltaTrapezium(&gyrDeltaAngleX,
- *                                                          newAngleSpeedX);
- *                  deltaAngleY = NINTEG_FindDeltaTrapezium(&gyrDeltaAngleY,
- *                                                          newAngleSpeedY);
- *                  deltaAngleZ = NINTEG_FindDeltaTrapezium(&gyrDeltaAngleZ,
- *                                                          newAngleSpeedZ);
- *
- *                  // Причем:
- *                  deltaAngleX == gyrDeltaAngleX.deltaData;
- *                  deltaAngleY == gyrDeltaAngleY.deltaData;
- *                  deltaAngleZ == gyrDeltaAngleZ.deltaData;
- *                  ...
- *              }
- *              return 0;
- *          }
- *      @endcode
- *      ------------------------------------------------------------------------
+ * @file   	%<%NAME%>%.%<%EXTENSION%>%
+ * @author 	%<%USER%>%
+ * @version
+ * @date 	%<%DATE%>%, %<%TIME%>%
+ * @brief
  */
 
-/******************************************************************************/
-// Секция include: здесь подключается заголовочный файл к модулю
+
+/*#### |Begin| --> Секция - "Include" ########################################*/
 #include "Lib_A_NINTEG_numerical_integration.h"
-/******************************************************************************/
+/*#### |End  | <-- Секция - "Include" ########################################*/
 
 
-/******************************************************************************/
-/*============================================================================*/
-// Глобальные переменные
-/*============================================================================*/
+/*#### |Begin| --> Секция - "Глобальные переменные" ##########################*/
+/*#### |End  | <-- Секция - "Глобальные переменные" ##########################*/
 
 
-/*============================================================================*/
-// Локальные переменные
-/*============================================================================*/
-/******************************************************************************/
+/*#### |Begin| --> Секция - "Локальные переменные" ###########################*/
+/*#### |End  | <-- Секция - "Локальные переменные" ###########################*/
 
 
-/******************************************************************************/
-// Секция прототипов локальных функций
-static __NINTEG_FPT__
-RestrictionSaturation (
-	__NINTEG_FPT__ value,
-	__NINTEG_FPT__ saturation);
-/******************************************************************************/
+/*#### |Begin| --> Секция - "Прототипы локальных функций" ####################*/
+/*#### |End  | <-- Секция - "Прототипы локальных функций" ####################*/
 
 
-/******************************************************************************/
-// Секция описания функций (сначала глобальных, потом локальных)
-
-/*============================================================================*/
-void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
-	__NINTEG_FPT__ *pPreviousAngleVelocityArr,
-	__NINTEG_FPT__ *pCurrentAngleVelocityArr,
-	__NINTEG_FPT__ deltaTimeInSec,
-	__NINTEG_FPT__ *pDeltaAnglesArr)
+/*#### |Begin| --> Секция - "Описание глобальных функций" ####################*/
+void
+NINTEG_Trapz_StructInit(
+	ninteg_trapz_init_s *pInitStruct)
 {
-	//  Нахождение дельты угла по оси X;
-	*pDeltaAnglesArr++ =
-		NINTEG_IntegrateAnglVelocityTrapezium(
-			pPreviousAngleVelocityArr++,
-			pCurrentAngleVelocityArr++,
-			deltaTimeInSec);
-
-	//  Нахождение дельты угла по оси Y;
-	*pDeltaAnglesArr++ =
-		NINTEG_IntegrateAnglVelocityTrapezium(
-			pPreviousAngleVelocityArr++,
-			pCurrentAngleVelocityArr++,
-			deltaTimeInSec);
-
-	//  Нахождение дельты угла по оси Z;
-	*pDeltaAnglesArr =
-		NINTEG_IntegrateAnglVelocityTrapezium(
-			pPreviousAngleVelocityArr,
-			pCurrentAngleVelocityArr,
-			deltaTimeInSec);
+	pInitStruct->accumulate_flag		= NINTEG_DISABLE;
+	pInitStruct->integratePeriod		= (__NINTEG_FPT__) 0.0;
+	pInitStruct->accumDataSaturation	= (__NINTEG_FPT__) 0.0;
 }
 
-__NINTEG_FPT__ NINTEG_IntegrateAnglVelocityTrapezium(
-	__NINTEG_FPT__ *pPreviousAngleVelocity,
-	__NINTEG_FPT__ *pCurrentAngleVelocity,
-	__NINTEG_FPT__ deltaTimeInSec)
-{
-	//  Нахождение угла на основе текущей угловой скорости и угловой скорости в
-	//  предыдущий момент времени;
-	__NINTEG_FPT__ deltaAngel =
-		(*pPreviousAngleVelocity + *pCurrentAngleVelocity) * deltaTimeInSec * 0.5f;
-
-	//  Копирование текущей угловой скорости в переменную угловой скорости за
-	//  предыдущий момент времени;
-	*pPreviousAngleVelocity = *pCurrentAngleVelocity;
-
-	return deltaAngel;
-}
-
-/**
- * @brief   Функция находит приращение величины методом трапеций за промежуток
- *          времени "dT".
- *          dT = время между вызовами функции NINTEG_FindDeltaTrapezium();
- * @param   *pStruct:   Указатель на структуру, содержащую данные для нахождения
- *                      приращения величины за промежуток времени;
- * @param   newData:    Новое значение для нахождения приращения;
- * @return  Приращение величины за промежуток времени "dT".
- *      @note   (Приращение за промежуток времени между вызовами функции
- *              "NINTEG_FindDeltaTrapezium()");
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      25-мар-2019
+ *
+ * @brief    Функция инициализирует структуру типа "ninteg_trapz_s"
+ *
+ * @param[out] 	*pTrapz_s:	Указатель на структуру для выполнения
+ * 							численного интегрирования методом трапеций
+ * @param[in]   *pInit_s:   Указатель на структуру, содержащую начальные
+ * 							параметры для записи в "pTrapz_s"
+ *
+ * @return Статус инициализации
  */
-__NINTEG_FPT__
+ninteg_fnc_status_e
+NINTEG_Trapz_Init(
+	ninteg_trapz_s			*pTrapz_s,
+	ninteg_trapz_init_s 	*pInit_s)
+{
+	/* Если период интегрирования равен нулю */
+	if (pInit_s->integratePeriod == ((__NINTEG_FPT__) 0.0))
+	{
+		pTrapz_s->initStatus_e = NINTEG_ERROR;
+	}
+	/* Если включено аккумулирование интегратора и не задано насыщение */
+	else if ((pInit_s->accumulate_flag == NINTEG_ENABLE)
+			 && (pInit_s->accumDataSaturation == ((__NINTEG_FPT__) 0.0)))
+	{
+		pTrapz_s->initStatus_e = NINTEG_ERROR;
+	}
+	else
+	{
+		pTrapz_s->dT 					= pInit_s->integratePeriod;
+		pTrapz_s->deltaData 			= 0.0;
+		pTrapz_s->previousData 			= 0.0;
+		pTrapz_s->tumblers_s.accumEn 	= pInit_s->accumulate_flag;
+		pTrapz_s->accumDataSaturation	= pInit_s->accumDataSaturation;
+
+		pTrapz_s->initStatus_e = NINTEG_SUCCESS;
+	}
+
+	return (pTrapz_s->initStatus_e);
+}
+
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      25-мар-2019
+ *
+ * @brief    Функция выполняет численное интегрирование методом трапеций
+ *           за промежуток времени "dT"
+ *
+ * @param[in,out]   *pTrapz_s:  Указатель на структуру, в которой содержатся
+ * 								данные для выполнения численного интегрирования
+ * 								методом трапеций
+ * @param[in]    	newData: 	Новое значение величины, интегрирование которой
+ *  							необходимо выполнить
+ *
+ * @return 		Если (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE), то функция возвращает аккумулированное значение интеграла
+ *              Если (pTrapz_s->tumblers_s.accumEn != NINTEG_ENABLE), то функция возвращает приращение интеграла
+ */
+__NINTEG_FORCE_INLINE __NINTEG_FPT__ __NINTEG_FNC_LOOP_OPTIMIZE_MODE
 NINTEG_Trapz(
 	ninteg_trapz_s *pTrapz_s,
 	__NINTEG_FPT__ newData)
 {
-	// Численное интегрирование методом трапеций;
+	/* Численное интегрирование методом трапеций */
 	pTrapz_s->deltaData =
-		(pTrapz_s->previousData + newData) * pTrapz_s->dT * 0.5f;
+		(pTrapz_s->previousData + newData) * pTrapz_s->dT * (__NINTEG_FPT__) 0.5;
 
-	// Копирование текущего значения переменной в переменную данных за предыдущий момент времени;
+	/* Копирование текущего значения переменной в переменную данных за предыдущий момент времени */
 	pTrapz_s->previousData = newData;
 
 	/* Если разрешено аккумулирование методом трапеций */
@@ -158,6 +111,7 @@ NINTEG_Trapz(
 		/* Инкремент аккумулятора */
 		pTrapz_s->accumData += pTrapz_s->deltaData;
 
+		/* Ограничение насыщения */
 		pTrapz_s->accumData =
 			RestrictionSaturation(
 				pTrapz_s->accumData,
@@ -169,77 +123,19 @@ NINTEG_Trapz(
 	else
 	{
 		/* Возврат дельты за промежуток времени */
-		return pTrapz_s->deltaData;
+		return (pTrapz_s->deltaData);
 	}
 }
-
-/**
- * @brief	Функция выполняет инициализацию структуры @ref ninteg_trapz_s;
- * @param[out]	*pTrapzStruct:	Указатель на структуру @ref ninteg_trapz_s
- * @param[in]	*pInitStruct:	Указатель на структуру @ref ninteg_trapz_InitStruct_s
- * @return	ninteg_fnc_status_e:
- * 			- NINTEG_ERROR:	Если неверно задан один из параметров в
- * 							структуре @ref ninteg_trapz_InitStruct_s
- * 			- NINTEG_SUCCESS: Инициализация прошла успешно
- */
-ninteg_fnc_status_e
-NINTEG_Trapz_Init(
-	ninteg_trapz_s			 	*pTrapzStruct,
-	ninteg_trapz_init_struct_s 	*pInitStruct)
-{
-	if (pInitStruct->integratePeriod == ((__NINTEG_FPT__) 0.0))
-	{
-		pTrapzStruct->initStatus_e = NINTEG_ERROR;
-	}
-	else
-	{
-		pTrapzStruct->dT 					= pInitStruct->integratePeriod;
-		pTrapzStruct->deltaData 			= 0.0;
-		pTrapzStruct->previousData 			= 0.0;
-		pTrapzStruct->tumblers_s.accumEn 	= pInitStruct->accumulate_flag;
-		pTrapzStruct->accumDataSaturation	= pInitStruct->accumDataSaturation;
-
-		pTrapzStruct->initStatus_e = NINTEG_SUCCESS;
-	}
-
-	return (pTrapzStruct->initStatus_e);
-}
-
-void
-NINTEG_Trapz_StructInit(
-	ninteg_trapz_init_struct_s *pInitStruct)
-{
-	pInitStruct->accumulate_flag		= NINTEG_DISABLE;
-	pInitStruct->integratePeriod		= (__NINTEG_FPT__) 0.0;
-	pInitStruct->accumDataSaturation	= (__NINTEG_FPT__) 0.0;
-}
-
-__NINTEG_FPT__
-RestrictionSaturation (
-	__NINTEG_FPT__ value,
-	__NINTEG_FPT__ saturation)
-{
-	/*    Ограничение насыщения выходного параметра */
-	//    Если переменная насыщения не равна "0.0":
-	if (saturation != (__NINTEG_FPT__) 0.0f)
-	{
-		//    Если выходное значение больше положительного значения переменной насыщения:
-		if (value > saturation)
-		{
-			value = saturation;
-		}
-		//  Если выходное значение меньше отрицательного значения переменной насыщения:
-		else if (value < (-saturation))
-		{
-			value = -saturation;
-		}
-	}
-	return value;
-}
-/*============================================================================*/
-/******************************************************************************/
+/*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
 
 
-////////////////////////////////////////////////////////////////////////////////
-// END OF FILE
-////////////////////////////////////////////////////////////////////////////////
+/*#### |Begin| --> Секция - "Описание локальных функций" #####################*/
+/*#### |End  | <-- Секция - "Описание локальных функций" #####################*/
+
+
+/*#### |Begin| --> Секция - "Обработчики прерываний" #########################*/
+/*#### |End  | <-- Секция - "Обработчики прерываний" #########################*/
+
+/*############################################################################*/
+/*############################ END OF FILE  ##################################*/
+/*############################################################################*/
