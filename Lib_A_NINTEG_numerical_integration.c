@@ -77,55 +77,7 @@ NINTEG_Trapz_Init(
 	return (pTrapz_s->initStatus_e);
 }
 
-/*-------------------------------------------------------------------------*//**
- * @author    Mickle Isaev
- * @date      25-мар-2019
- *
- * @brief    Функция выполняет численное интегрирование методом трапеций
- *           за промежуток времени "dT"
- *
- * @param[in,out]   *pTrapz_s:  Указатель на структуру, в которой содержатся
- * 								данные для выполнения численного интегрирования
- * 								методом трапеций
- * @param[in]    	newData: 	Новое значение величины, интегрирование которой
- *  							необходимо выполнить
- *
- * @return 		Если (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE), то функция возвращает аккумулированное значение интеграла
- *              Если (pTrapz_s->tumblers_s.accumEn != NINTEG_ENABLE), то функция возвращает приращение интеграла
- */
-__NINTEG_FORCE_INLINE __NINTEG_FPT__ __NINTEG_FNC_LOOP_OPTIMIZE_MODE
-NINTEG_Trapz(
-	ninteg_trapz_s *pTrapz_s,
-	__NINTEG_FPT__ newData)
-{
-	/* Численное интегрирование методом трапеций */
-	pTrapz_s->deltaData =
-		(pTrapz_s->previousData + newData) * pTrapz_s->dT * (__NINTEG_FPT__) 0.5;
 
-	/* Копирование текущего значения переменной в переменную данных за предыдущий момент времени */
-	pTrapz_s->previousData = newData;
-
-	/* Если разрешено аккумулирование методом трапеций */
-	if (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE)
-	{
-		/* Инкремент аккумулятора */
-		pTrapz_s->accumData += pTrapz_s->deltaData;
-
-		/* Ограничение насыщения */
-		pTrapz_s->accumData =
-			RestrictionSaturation(
-				pTrapz_s->accumData,
-				pTrapz_s->accumDataSaturation);
-
-		/* Возврат аккумулированного значения */
-		return (pTrapz_s->accumData);
-	}
-	else
-	{
-		/* Возврат дельты за промежуток времени */
-		return (pTrapz_s->deltaData);
-	}
-}
 /*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
 
 

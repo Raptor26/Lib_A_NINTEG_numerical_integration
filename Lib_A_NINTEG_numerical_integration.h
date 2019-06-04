@@ -211,7 +211,6 @@ NINTEG_Trapz_Init(
 	ninteg_trapz_s			*pTrapzStruct,
 	ninteg_trapz_init_s 	*pInitStruct);
 
-
 /*-------------------------------------------------------------------------*//**
  * @author    Mickle Isaev
  * @date      25-мар-2019
@@ -223,7 +222,7 @@ NINTEG_Trapz_Init(
  *
  * @return    параметр "value" с учетом насыщения, заданного параметром "saturation"
  */
-__NINTEG_ALWAYS_INLINE __NINTEG_FPT__ __NINTEG_FNC_LOOP_OPTIMIZE_MODE
+__NINTEG_ALWAYS_INLINE __NINTEG_FPT__
 RestrictionSaturation (
 	__NINTEG_FPT__ value,
 	__NINTEG_FPT__ saturation)
@@ -245,11 +244,55 @@ RestrictionSaturation (
 	return (value);
 }
 
-extern __NINTEG_FPT__ __NINTEG_FNC_LOOP_OPTIMIZE_MODE
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      25-мар-2019
+ *
+ * @brief    Функция выполняет численное интегрирование методом трапеций
+ *           за промежуток времени "dT"
+ *
+ * @param[in,out]   *pTrapz_s:  Указатель на структуру, в которой содержатся
+ * 								данные для выполнения численного интегрирования
+ * 								методом трапеций
+ * @param[in]    	newData: 	Новое значение величины, интегрирование которой
+ *  							необходимо выполнить
+ *
+ * @return 		Если (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE), то функция возвращает аккумулированное значение интеграла
+ *              Если (pTrapz_s->tumblers_s.accumEn != NINTEG_ENABLE), то функция возвращает приращение интеграла
+ */
+__NINTEG_ALWAYS_INLINE __NINTEG_FPT__
 NINTEG_Trapz(
 	ninteg_trapz_s *pTrapz_s,
-	__NINTEG_FPT__ newData
-) __NINTEG_FNC_LOOP_MEMORY_LOCATION;
+	__NINTEG_FPT__ newData)
+{
+	/* Численное интегрирование методом трапеций */
+	pTrapz_s->deltaData =
+		(pTrapz_s->previousData + newData) * pTrapz_s->dT * (__NINTEG_FPT__) 0.5;
+
+	/* Копирование текущего значения переменной в переменную данных за предыдущий момент времени */
+	pTrapz_s->previousData = newData;
+
+	/* Если разрешено аккумулирование методом трапеций */
+	if (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE)
+	{
+		/* Инкремент аккумулятора */
+		pTrapz_s->accumData += pTrapz_s->deltaData;
+
+		/* Ограничение насыщения */
+		pTrapz_s->accumData =
+			RestrictionSaturation(
+				pTrapz_s->accumData,
+				pTrapz_s->accumDataSaturation);
+
+		/* Возврат аккумулированного значения */
+		return (pTrapz_s->accumData);
+	}
+	else
+	{
+		/* Возврат дельты за промежуток времени */
+		return (pTrapz_s->deltaData);
+	}
+}
 /*#### |End  | <-- Секция - "Прототипы глобальных функций" ###################*/
 
 
