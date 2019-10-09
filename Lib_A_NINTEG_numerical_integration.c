@@ -1,95 +1,93 @@
 /**
- * File:   %<%NAME%>%.%<%EXTENSION%>%
- * Author: %<%USER%>%
- *
- * Created on %<%DATE%>%, %<%TIME%>%
+ * @file   	%<%NAME%>%.%<%EXTENSION%>%
+ * @author 	%<%USER%>%
+ * @version
+ * @date 	%<%DATE%>%, %<%TIME%>%
+ * @brief
  */
 
-/******************************************************************************/
-// Секция include: здесь подключается заголовочный файл к модулю
+
+/*#### |Begin| --> Секция - "Include" ########################################*/
 #include "Lib_A_NINTEG_numerical_integration.h"
-/******************************************************************************/
+/*#### |End  | <-- Секция - "Include" ########################################*/
 
 
-/******************************************************************************/
-/*============================================================================*/
-// Глобальные переменные
-/*============================================================================*/
+/*#### |Begin| --> Секция - "Глобальные переменные" ##########################*/
+/*#### |End  | <-- Секция - "Глобальные переменные" ##########################*/
 
 
-/*============================================================================*/
-// Локальные переменные
-/*============================================================================*/
-/******************************************************************************/
+/*#### |Begin| --> Секция - "Локальные переменные" ###########################*/
+/*#### |End  | <-- Секция - "Локальные переменные" ###########################*/
 
 
-/******************************************************************************/
-// Секция прототипов локальных функций
-/******************************************************************************/
+/*#### |Begin| --> Секция - "Прототипы локальных функций" ####################*/
+/*#### |End  | <-- Секция - "Прототипы локальных функций" ####################*/
 
 
-/******************************************************************************/
-// Секция описания функций (сначала глобальных, потом локальных)
-
-/*============================================================================*/
-void NINTEG_IntegrateAngleVelocityTrapeziumAllAxis(
-                                                   float *pPreviousAngleVelocityArr,
-                                                   float *pCurrentAngleVelocityArr,
-                                                   float deltaTimeInSec,
-                                                   float *pDeltaAnglesArr)
+/*#### |Begin| --> Секция - "Описание глобальных функций" ####################*/
+void
+NINTEG_Trapz_StructInit(
+	ninteg_trapz_init_s *pInitStruct)
 {
-    //  Нахождение дельты угла по оси X;
-    *pDeltaAnglesArr++ = NINTEG_IntegrateAnglVelocityTrapezium \
-                         (pPreviousAngleVelocityArr++, \
-                          pCurrentAngleVelocityArr++, \
-                          deltaTimeInSec);
-
-    //  Нахождение дельты угла по оси Y;
-    *pDeltaAnglesArr++ = NINTEG_IntegrateAnglVelocityTrapezium \
-                         (pPreviousAngleVelocityArr++, \
-                          pCurrentAngleVelocityArr++, \
-                          deltaTimeInSec);
-
-    //  Нахождение дельты угла по оси Z;
-    *pDeltaAnglesArr = NINTEG_IntegrateAnglVelocityTrapezium \
-                         (pPreviousAngleVelocityArr, \
-                          pCurrentAngleVelocityArr, \
-                          deltaTimeInSec);
+	pInitStruct->accumulate_flag		= NINTEG_DISABLE;
+	pInitStruct->integratePeriod		= (__NINTEG_FPT__) 0.0;
+	pInitStruct->accumDataSaturation	= (__NINTEG_FPT__) 0.0;
 }
 
-float NINTEG_IntegrateAnglVelocityTrapezium(
-                                            float *pPreviousAngleVelocity,
-                                            float *pCurrentAngleVelocity,
-                                            float deltaTimeInSec)
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      25-мар-2019
+ *
+ * @brief    Функция инициализирует структуру типа "ninteg_trapz_s"
+ *
+ * @param[out] 	*pTrapz_s:	Указатель на структуру для выполнения
+ * 							численного интегрирования методом трапеций
+ * @param[in]   *pInit_s:   Указатель на структуру, содержащую начальные
+ * 							параметры для записи в "pTrapz_s"
+ *
+ * @return Статус инициализации
+ */
+ninteg_fnc_status_e
+NINTEG_Trapz_Init(
+	ninteg_trapz_s			*pTrapz_s,
+	ninteg_trapz_init_s 	*pInit_s)
 {
-    //  Нахождение угла на основе текущей угловой скорости и угловой скорости в
-    //  предыдущий момент времени;
-    float deltaAngel = (*pPreviousAngleVelocity + *pCurrentAngleVelocity) * deltaTimeInSec / 2.0f;
+	/* Если период интегрирования равен нулю */
+	if (pInit_s->integratePeriod == ((__NINTEG_FPT__) 0.0))
+	{
+		pTrapz_s->initStatus_e = NINTEG_ERROR;
+	}
+	/* Если включено аккумулирование интегратора и не задано насыщение */
+	else if ((pInit_s->accumulate_flag == NINTEG_ENABLE)
+			 && (pInit_s->accumDataSaturation == ((__NINTEG_FPT__) 0.0)))
+	{
+		pTrapz_s->initStatus_e = NINTEG_ERROR;
+	}
+	else
+	{
+		pTrapz_s->dT 					= pInit_s->integratePeriod;
+		pTrapz_s->deltaData 			= 0.0;
+		pTrapz_s->previousData 			= 0.0;
+		pTrapz_s->tumblers_s.accumEn 	= pInit_s->accumulate_flag;
+		pTrapz_s->accumDataSaturation	= pInit_s->accumDataSaturation;
 
-    //  Копирование текущей угловой скорости в переменную угловой скорости за
-    //  предыдущий момент времени;
-    *pPreviousAngleVelocity = *pCurrentAngleVelocity;
+		pTrapz_s->initStatus_e = NINTEG_SUCCESS;
+	}
 
-    return deltaAngel;
+	return (pTrapz_s->initStatus_e);
 }
 
-float NINTEG_IntegrateTrapezium(
-                                NINTEG_trapezium_integrate_s *pStruct,
-                                float data)
-{
-    // Численное интегрирование методом трапеций;
-    pStruct->integratedata = (pStruct->previousData + data) * pStruct->dT / 2.0f;
 
-    // Копирование текущего значения переменной в переменную данных за предыдущий момент времени;
-    pStruct->previousData = data;
-
-    // Возврат интегрированного значения;
-    return pStruct->integratedata;
-}
-/*============================================================================*/
-/******************************************************************************/
+/*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
 
 
-////////////////////////////////////////////////////////////////////////////////
-// END OF FILE
-////////////////////////////////////////////////////////////////////////////////
+/*#### |Begin| --> Секция - "Описание локальных функций" #####################*/
+/*#### |End  | <-- Секция - "Описание локальных функций" #####################*/
+
+
+/*#### |Begin| --> Секция - "Обработчики прерываний" #########################*/
+/*#### |End  | <-- Секция - "Обработчики прерываний" #########################*/
+
+/*############################################################################*/
+/*############################ END OF FILE  ##################################*/
+/*############################################################################*/
