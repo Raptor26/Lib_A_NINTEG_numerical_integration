@@ -293,6 +293,34 @@ NINTEG_Trapz(
 		return (pTrapz_s->deltaData);
 	}
 }
+
+/*-------------------------------------------------------------------------*//**
+ * @author    Mickle Isaev
+ * @date      24-окт-2019
+ *
+ * @brief 	Функция возвращает крайнее значение, полученно в результате 
+ * 			вызова NINTEG_Trapz()
+ *
+ * @param[in,out]   *pTrapz_s:  Указатель на структуру, в которой содержатся
+ * 								данные для выполнения численного интегрирования
+ * 								методом трапеций
+ *
+ * @return 		Если (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE), то функция возвращает аккумулированное значение интеграла
+ *              Если (pTrapz_s->tumblers_s.accumEn != NINTEG_ENABLE), то функция возвращает приращение интеграла
+ */
+__NINTEG_ALWAYS_INLINE __NINTEG_FPT__
+NINTEG_TrapzGetLastVal(
+	ninteg_trapz_s	*pTrapz_s)
+{
+	if (pTrapz_s->tumblers_s.accumEn == NINTEG_ENABLE)
+	{
+		return (pTrapz_s->accumData);
+	}
+	else
+	{
+		return (pTrapz_s->deltaData);
+	}
+}
 /*#### |End  | <-- Секция - "Прототипы глобальных функций" ###################*/
 
 
