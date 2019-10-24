@@ -76,11 +76,6 @@ NINTEG_Trapz_Init(
 
 	return (pTrapz_s->initStatus_e);
 }
-
-NINTEG_TrapzGetLastVal()
-{
-	
-}
 /*#### |End  | <-- Секция - "Описание глобальных функций" ####################*/
 
 
